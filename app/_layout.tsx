@@ -13,7 +13,6 @@ import { useSensorData } from '@/hooks/useSensorData';
 import { useTheme } from '@/hooks/useTheme';
 import { useAppStore } from '@/store/appStore';
 
-// Initialize i18n (side effect import — must come before any useTranslation)
 import '@/services/i18n';
 
 SplashScreen.preventAutoHideAsync();
@@ -27,8 +26,14 @@ export default function RootLayout() {
   }, [isDatabaseReady, setDatabaseReady]);
 
   useEffect(() => {
-    if (isDatabaseReady) SplashScreen.hideAsync();
-  }, [isDatabaseReady]);
+    if (isDatabaseReady || error) SplashScreen.hideAsync();
+  }, [isDatabaseReady, error]);
+
+  // Sécurité : force le masquage du splash après 10s max (ex: DB bloquée)
+  useEffect(() => {
+    const timeout = setTimeout(() => SplashScreen.hideAsync(), 10000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   if (error) {
     return (

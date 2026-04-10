@@ -16,7 +16,15 @@ export function useDatabase(): UseDatabaseState {
     try {
       setError(null);
       setIsReady(false);
-      await initializeDatabase();
+
+      const timeout = new Promise<never>((_, reject) =>
+        setTimeout(
+          () => reject(new Error('Délai dépassé : base de données non disponible')),
+          8000
+        )
+      );
+      await Promise.race([initializeDatabase(), timeout]);
+
       setIsReady(true);
     } catch (initError) {
       console.error('Database initialization failed:', initError);
