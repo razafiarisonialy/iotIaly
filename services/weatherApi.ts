@@ -1,16 +1,26 @@
 
 import Constants from 'expo-constants';
-import type { WeatherData, OpenWeatherMapResponse } from '@/types';
+import type {
+  WeatherData,
+  OpenWeatherMapResponse,
+  ForecastItem,
+  OpenWeatherMapForecastResponse,
+} from '@/types';
 import {
   WEATHER_API_BASE_URL,
+  WEATHER_FORECAST_URL,
+  WEATHER_GEOCODING_URL,
+  WEATHER_ICON_BASE_URL,
   DEFAULT_WEATHER_CITY,
   WEATHER_CACHE_DURATION_MS,
   WEATHER_API_TIMEOUT_MS,
 } from '@/utils/constants';
 
-
-
-
+export interface GeoCity {
+  name: string;
+  country: string;
+  state?: string;
+}
 
 interface WeatherCache {
   data: WeatherData;
@@ -19,27 +29,12 @@ interface WeatherCache {
 
 let weatherCache: WeatherCache | null = null;
 
-
-
-
-
 function getApiKey(customKey?: string): string {
   if (customKey && customKey.length > 0) {
     return customKey;
   }
-
-  
-  const envKey = Constants.expirationDate; 
-  const extraKey =
-    (Constants.expoConfig?.extra as Record<string, string> | undefined)
-      ?.weatherApiKey ?? '';
-
-  if (extraKey.length > 0) {
-    return extraKey;
-  }
-
-  // Fallback to the placeholder (will fail gracefully)
-  return 'YOUR_OPENWEATHERMAP_API_KEY_HERE';
+  const extra = (Constants.expoConfig?.extra as Record<string, string> | undefined) ?? {};
+  return extra.weatherApiKey ?? '';
 }
 
 export async function fetchWeather(
@@ -47,7 +42,6 @@ export async function fetchWeather(
   apiKey?: string,
   forceRefresh: boolean = false
 ): Promise<WeatherData | null> {
-  
   if (
     !forceRefresh &&
     weatherCache &&
@@ -57,8 +51,8 @@ export async function fetchWeather(
   }
 
   const key = getApiKey(apiKey);
-  if (key === 'YOUR_OPENWEATHERMAP_API_KEY_HERE') {
-    console.warn('Weather API key not configured. Using simulated data.');
+  if (!key) {
+    console.warn('Weather API key not configured in .env (WEATHER_API_KEY).');
     return null;
   }
 
@@ -66,10 +60,7 @@ export async function fetchWeather(
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(
-      () => controller.abort(),
-      WEATHER_API_TIMEOUT_MS
-    );
+    const timeoutId = setTimeout(() => controller.abort(), WEATHER_API_TIMEOUT_MS);
 
     const response = await fetch(url, { signal: controller.signal });
     clearTimeout(timeoutId);
@@ -100,7 +91,6 @@ export async function fetchWeather(
       timestamp: new Date().toISOString(),
     };
 
-    
     weatherCache = {
       data: weatherData,
       timestamp: Date.now(),
@@ -121,15 +111,16 @@ export async function testWeatherConnection(
   apiKey: string,
   city: string = DEFAULT_WEATHER_CITY
 ): Promise<{ success: boolean; message: string }> {
-  if (!apiKey || apiKey === 'YOUR_OPENWEATHERMAP_API_KEY_HERE') {
+  const key = getApiKey(apiKey);
+  if (!key) {
     return {
       success: false,
-      message: 'Veuillez entrer une clé API valide',
+      message: 'Clé API manquante dans .env (WEATHER_API_KEY)',
     };
   }
 
   try {
-    const data = await fetchWeather(city, apiKey, true);
+    const data = await fetchWeather(city, key, true);
     if (data) {
       return {
         success: true,
@@ -140,7 +131,7 @@ export async function testWeatherConnection(
       success: false,
       message: 'Échec de la connexion. Vérifiez votre clé API.',
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       message: 'Erreur réseau. Vérifiez votre connexion internet.',
@@ -149,9 +140,69 @@ export async function testWeatherConnection(
 }
 
 export function getWeatherIconUrl(iconCode: string): string {
-  return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+  return `${WEATHER_ICON_BASE_URL}${iconCode}@2x.png`;
 }
 
 export function clearWeatherCache(): void {
   weatherCache = null;
+}
+
+export async function fetchForecast(
+  city: string = DEFAULT_WEATHER_CITY,
+  apiKey?: string
+): Promise<ForecastItem[] | null> {
+  const key = getApiKey(apiKey);
+  if (!key) return null;
+
+  const url = `${WEATHER_FORECAST_URL}?q=${encodeURIComponent(city)}&appid=${key}&units=metric&lang=fr&cnt=8`;
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), WEATHER_API_TIMEOUT_MS);
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+
+    if (!response.ok) return null;
+
+    const data: OpenWeatherMapForecastResponse = await response.json();
+
+    return data.list.map((item) => {
+      const date = new Date(item.dt * 1000);
+      const hour = date.getHours().toString().padStart(2, '0') + 'h';
+      return {
+        dt: item.dt,
+        temp: Math.round(item.main.temp * 10) / 10,
+        feelsLike: Math.round(item.main.feels_like * 10) / 10,
+        humidity: item.main.humidity,
+        description: item.weather[0]?.description ?? '',
+        icon: item.weather[0]?.icon ?? '01d',
+        hour,
+      };
+    });
+  } catch {
+    return null;
+  }
+}
+
+export async function searchCities(query: string, limit = 5): Promise<GeoCity[]> {
+  const key = getApiKey();
+  if (!key || query.trim().length < 2) return [];
+
+  const url = `${WEATHER_GEOCODING_URL}?q=${encodeURIComponent(query.trim())}&limit=${limit}&appid=${key}`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) return [];
+    const data = await response.json() as Array<{ name: string; country: string; state?: string }>;
+    // deduplicate by "name, country"
+    const seen = new Set<string>();
+    return data.filter((item) => {
+      const key = `${item.name},${item.country}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).map(({ name, country, state }) => ({ name, country, state }));
+  } catch {
+    return [];
+  }
 }

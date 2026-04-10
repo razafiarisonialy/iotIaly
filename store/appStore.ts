@@ -1,21 +1,23 @@
 
-import { create } from 'zustand';
 import type {
-  SensorType,
-  SensorReading,
   Alert,
-  SeverityLevel,
+  ForecastItem,
+  PredictionResult,
+  SensorReading,
+  SensorType,
   SimulationSpeed,
   SystemStatus,
-  ValueStatus,
-  TrendDirection,
-  PredictionResult,
   ThresholdConfig,
+  TrendDirection,
+  ValueStatus,
   WeatherData,
 } from '@/types';
-import { SENSOR_UNIT_MAP } from '@/utils/constants';
-import { DEFAULT_THRESHOLDS, getValueStatus } from '@/utils/thresholds';
 import { getCurrentTimestamp } from '@/utils/helpers';
+import { DEFAULT_THRESHOLDS, getValueStatus } from '@/utils/thresholds';
+import Constants from 'expo-constants';
+import { create } from 'zustand';
+
+const _envExtra = Constants.expoConfig?.extra as Record<string, string> | undefined;
 
 
 
@@ -50,8 +52,11 @@ interface AppState {
   weatherCity: string;
   thresholds: ThresholdConfig[];
 
-  
+
   weatherData: WeatherData | null;
+  weatherForecast: ForecastItem[] | null;
+  weatherCities: string[];
+  activeWeatherCity: string;
 
   
   systemStatus: SystemStatus;
@@ -90,8 +95,13 @@ interface AppActions {
   setThresholds: (thresholds: ThresholdConfig[]) => void;
   updateThreshold: (sensorType: SensorType, config: Partial<ThresholdConfig>) => void;
 
-  
+
   setWeatherData: (data: WeatherData | null) => void;
+  setWeatherForecast: (forecast: ForecastItem[] | null) => void;
+  setWeatherCities: (cities: string[]) => void;
+  addWeatherCity: (city: string) => void;
+  removeWeatherCity: (city: string) => void;
+  setActiveWeatherCity: (city: string) => void;
 
   
   setDatabaseReady: (ready: boolean) => void;
@@ -143,12 +153,15 @@ export const useAppStore = create<AppStore>((set, get) => ({
   simulationSpeed: 'normal',
   simulationRunning: false,
   useRealWeather: false,
-  weatherApiKey: '',
+  weatherApiKey: _envExtra?.weatherApiKey ?? '',
   weatherCity: 'Antananarivo',
   thresholds: [...DEFAULT_THRESHOLDS],
 
-  
+
   weatherData: null,
+  weatherForecast: null,
+  weatherCities: [],
+  activeWeatherCity: 'Antananarivo',
 
   
   systemStatus: 'normal',
@@ -282,6 +295,19 @@ export const useAppStore = create<AppStore>((set, get) => ({
   
 
   setWeatherData: (data) => set({ weatherData: data }),
+  setWeatherForecast: (forecast) => set({ weatherForecast: forecast }),
+  setWeatherCities: (cities) => set({ weatherCities: cities }),
+  addWeatherCity: (city) =>
+    set((state) => ({
+      weatherCities: state.weatherCities.includes(city)
+        ? state.weatherCities
+        : [...state.weatherCities, city],
+    })),
+  removeWeatherCity: (city) =>
+    set((state) => ({
+      weatherCities: state.weatherCities.filter((c) => c !== city),
+    })),
+  setActiveWeatherCity: (city) => set({ activeWeatherCity: city }),
 
   
 

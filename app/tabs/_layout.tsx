@@ -2,12 +2,14 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/hooks/useTheme';
 import { useUnreadAlertCount } from '@/store/appStore';
 import { themeConfig } from '@/constants/colors';
 
 export default function TabLayout() {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const unreadCount = useUnreadAlertCount();
 
   return (
@@ -33,33 +35,34 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Dashboard',
+          title: t('tabs.dashboard'),
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="view-dashboard"
-              size={size}
-              color={color}
-            />
+            <MaterialCommunityIcons name="weather-partly-cloudy" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="simulation"
+        options={{
+          title: t('tabs.simulation'),
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="view-dashboard" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
-          title: 'Historique',
+          title: t('tabs.history'),
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="chart-line"
-              size={size}
-              color={color}
-            />
+            <MaterialCommunityIcons name="chart-line" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="alerts"
         options={{
-          title: 'Alertes',
+          title: t('tabs.alerts'),
           tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
           tabBarBadgeStyle: {
             backgroundColor: colors.error,
@@ -70,18 +73,14 @@ export default function TabLayout() {
             minHeight: 18,
           },
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="bell-outline"
-              size={size}
-              color={color}
-            />
+            <MaterialCommunityIcons name="bell-outline" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Paramètres',
+          title: t('tabs.settings'),
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="cog" size={size} color={color} />
           ),

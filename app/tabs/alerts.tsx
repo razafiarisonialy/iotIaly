@@ -9,6 +9,7 @@ import {
   Alert as RNAlert,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Header } from '@/components/layout/Header';
 import { AlertBanner } from '@/components/ui/AlertBanner';
 import { useTheme } from '@/hooks/useTheme';
@@ -18,21 +19,23 @@ import type { Alert, SeverityLevel } from '@/types';
 import type { AlertFilter } from '@/hooks/useAlerts';
 import { themeConfig } from '@/constants/colors';
 
-const FILTER_TABS: { key: AlertFilter; label: string }[] = [
-  { key: 'all', label: 'Toutes' },
-  { key: 'unacknowledged', label: 'Non lues' },
-  { key: 'acknowledged', label: 'Acquittées' },
-];
-
-const SEVERITY_OPTIONS: { key: SeverityLevel | null; label: string }[] = [
-  { key: null, label: 'Toutes' },
-  { key: 'critical', label: 'Critique' },
-  { key: 'warning', label: 'Avertissement' },
-  { key: 'info', label: 'Info' },
-];
-
 export default function AlertsScreen() {
+  const { t } = useTranslation();
   const { colors } = useTheme();
+
+  const FILTER_TABS: { key: AlertFilter; label: string }[] = [
+    { key: 'all', label: t('alerts.all') },
+    { key: 'unacknowledged', label: t('alerts.unread') },
+    { key: 'acknowledged', label: t('alerts.acknowledged') },
+  ];
+
+  const SEVERITY_OPTIONS: { key: SeverityLevel | null; label: string }[] = [
+    { key: null, label: t('alerts.all') },
+    { key: 'critical', label: t('alerts.critical') },
+    { key: 'warning', label: t('alerts.warning') },
+    { key: 'info', label: t('alerts.info') },
+  ];
+
   const {
     alerts,
     unreadCount,
@@ -54,32 +57,29 @@ export default function AlertsScreen() {
 
   const handleAcknowledgeAll = useCallback(() => {
     RNAlert.alert(
-      'Acquitter toutes les alertes',
-      'Voulez-vous vraiment acquitter toutes les alertes?',
+      t('alerts.acknowledgeAllTitle'),
+      t('alerts.acknowledgeAllMsg'),
       [
-        { text: 'Annuler', style: 'cancel' },
-        {
-          text: 'Acquitter',
-          onPress: () => acknowledgeAll(),
-        },
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('alerts.acknowledgeBtn'), onPress: () => acknowledgeAll() },
       ]
     );
-  }, [acknowledgeAll]);
+  }, [acknowledgeAll, t]);
 
   const handleClearAll = useCallback(() => {
     RNAlert.alert(
-      'Supprimer toutes les alertes',
-      'Cette action est irréversible. Continuer?',
+      t('alerts.deleteAllTitle'),
+      t('alerts.deleteAllMsg'),
       [
-        { text: 'Annuler', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Supprimer',
+          text: t('alerts.deleteBtn'),
           style: 'destructive',
           onPress: () => clearAll(),
         },
       ]
     );
-  }, [clearAll]);
+  }, [clearAll, t]);
 
   const renderAlertItem = useCallback(
     ({ item }: { item: Alert }) => (
@@ -95,7 +95,7 @@ export default function AlertsScreen() {
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
-      <Header title="Alertes" showStatus={false} />
+      <Header title={t('alerts.title')} showStatus={false} />
 
       <FlatList
         data={alerts}
@@ -118,8 +118,7 @@ export default function AlertsScreen() {
                   color={colors.error}
                 />
                 <Text style={[styles.unreadText, { color: colors.error }]}>
-                  {unreadCount} alerte{unreadCount > 1 ? 's' : ''} non lue
-                  {unreadCount > 1 ? 's' : ''}
+                  {t('alerts.unreadCount', { count: unreadCount })}
                 </Text>
               </View>
             )}
@@ -217,7 +216,7 @@ export default function AlertsScreen() {
                   color={colors.primary}
                 />
                 <Text style={[styles.actionText, { color: colors.primary }]}>
-                  Tout acquitter
+                  {t('alerts.acknowledgeAll')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -233,7 +232,7 @@ export default function AlertsScreen() {
                   color={colors.error}
                 />
                 <Text style={[styles.actionText, { color: colors.error }]}>
-                  Tout supprimer
+                  {t('alerts.deleteAll')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -247,7 +246,7 @@ export default function AlertsScreen() {
               color={colors.textTertiary}
             />
             <Text style={[styles.emptyText, { color: colors.textTertiary }]}>
-              Aucune alerte{filter !== 'all' ? ' pour ce filtre' : ''}.
+              {t('alerts.noAlerts')}
             </Text>
           </View>
         }

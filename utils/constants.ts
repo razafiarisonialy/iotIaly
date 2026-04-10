@@ -1,11 +1,15 @@
 
-import type { SensorType, SensorUnit } from '@/types';
+import type { MaterialIconName, SensorType, SensorUnit } from '@/types';
+import Constants from 'expo-constants';
+
+const _extra = (Constants.expoConfig?.extra ?? {}) as Record<string, string>;
+const _weatherBase = _extra.weatherUrl ?? 'https://api.openweathermap.org';
 
 
 
 
 
-export const APP_NAME = 'IoT Aly';
+export const APP_NAME = 'IALY IOT';
 export const APP_VERSION = '1.0.0';
 export const APP_DESCRIPTION =
   'Application IoT/AIoT intelligente avec simulation de capteurs et IA embarquée';
@@ -30,7 +34,7 @@ export const SENSOR_LABELS: Record<SensorType, string> = {
   air_quality: 'Qualité Air',
 };
 
-export const SENSOR_ICONS: Record<SensorType, string> = {
+export const SENSOR_ICONS: Record<SensorType, MaterialIconName> = {
   temperature: 'thermometer',
   humidity: 'water-percent',
   motion: 'motion-sensor',
@@ -74,10 +78,15 @@ export const PREDICTION_MINUTES_AHEAD = 10;
 
 
 
-export const WEATHER_API_BASE_URL =
-  'https://api.openweathermap.org/data/2.5/weather';
+export const WEATHER_API_BASE_URL = `${_weatherBase}/data/2.5/weather`;
 
-export const DEFAULT_WEATHER_CITY = 'Antananarivo';
+export const WEATHER_FORECAST_URL = `${_weatherBase}/data/2.5/forecast`;
+
+export const WEATHER_GEOCODING_URL = `${_weatherBase}/geo/1.0/direct`;
+
+export const WEATHER_ICON_BASE_URL = `${_weatherBase.replace('//api.', '//')}/img/wn/`;
+
+export const DEFAULT_WEATHER_CITY = _extra.defaultWeatherCity ?? 'Antananarivo';
 
 export const WEATHER_CACHE_DURATION_MS = 5 * 60 * 1000;
 

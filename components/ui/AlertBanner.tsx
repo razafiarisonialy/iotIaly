@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { SEVERITY_COLORS } from '@/utils/constants';
 import { formatRelativeTime } from '@/utils/helpers';
-import type { Alert, SeverityLevel } from '@/types';
+import type { Alert, SeverityLevel, MaterialIconName } from '@/types';
 
 interface AlertBannerProps {
     alert: Alert;
@@ -13,7 +13,7 @@ interface AlertBannerProps {
     compact?: boolean;
 }
 
-const SEVERITY_ICONS: Record<SeverityLevel, keyof typeof MaterialCommunityIcons.glyphMap> = {
+const SEVERITY_ICONS: Record<SeverityLevel, MaterialIconName> = {
   info: 'information-outline',
   warning: 'alert-outline',
   critical: 'alert-circle-outline',

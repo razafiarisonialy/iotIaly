@@ -29,7 +29,7 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
   const { colors } = useTheme();
   const sensor = useSensor(sensorType);
 
-  const iconName = SENSOR_ICONS[sensorType] as keyof typeof MaterialCommunityIcons.glyphMap;
+  const iconName = SENSOR_ICONS[sensorType];
   const label = SENSOR_LABELS[sensorType];
   const sensorColor = SENSOR_COLORS[sensorType];
   const statusColor = STATUS_COLORS[sensor.status];

@@ -1,4 +1,6 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+export type MaterialIconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
 
 
@@ -168,6 +170,31 @@ export interface OpenWeatherMapResponse {
   sys: {
     country: string;
   };
+}
+
+export interface ForecastItem {
+  dt: number;
+  temp: number;
+  feelsLike: number;
+  humidity: number;
+  description: string;
+  icon: string;
+  hour: string;
+}
+
+export interface OpenWeatherMapForecastResponse {
+  list: Array<{
+    dt: number;
+    main: {
+      temp: number;
+      feels_like: number;
+      humidity: number;
+    };
+    weather: Array<{
+      description: string;
+      icon: string;
+    }>;
+  }>;
 }
 
 

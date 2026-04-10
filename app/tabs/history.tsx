@@ -1,42 +1,44 @@
 
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert as RNAlert,
-} from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { File, Paths } from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
-import { Header } from '@/components/layout/Header';
 import { LineChartSensor } from '@/components/charts/LineChartSensor';
+import { Header } from '@/components/layout/Header';
+import { themeConfig } from '@/constants/colors';
 import { useTheme } from '@/hooks/useTheme';
 import { getReadingsByDateRange } from '@/services/database';
+import type { MaterialIconName, SensorReading, SensorType, StatsSummary, TimePeriod } from '@/types';
 import {
-  SENSOR_TYPES,
-  SENSOR_LABELS,
   SENSOR_COLORS,
   SENSOR_ICONS,
+  SENSOR_LABELS,
+  SENSOR_TYPES,
   TIME_PERIOD_LABELS,
 } from '@/utils/constants';
 import {
-  formatDateTime,
   calculateStats,
-  getStartDateForPeriod,
+  formatDateTime,
   getCurrentTimestamp,
+  getStartDateForPeriod,
   readingsToCSV,
   roundTo,
 } from '@/utils/helpers';
-import type { SensorType, SensorReading, TimePeriod, StatsSummary } from '@/types';
-import { themeConfig } from '@/constants/colors';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { File, Paths } from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  ActivityIndicator,
+  FlatList,
+  Alert as RNAlert,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const TIME_PERIODS: TimePeriod[] = ['1h', '6h', '24h', '7d', '30d'];
 
 export default function HistoryScreen() {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const [selectedSensor, setSelectedSensor] = useState<SensorType>('temperature');
   const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('1h');
@@ -75,7 +77,7 @@ export default function HistoryScreen() {
 
     const handleExport = useCallback(async () => {
     if (readings.length === 0) {
-      RNAlert.alert('Aucune donnée', 'Pas de données à exporter.');
+      RNAlert.alert(t('history.noDataToExport'), t('history.noDataToExportMsg'));
       return;
     }
 
@@ -89,14 +91,14 @@ export default function HistoryScreen() {
       if (isAvailable) {
         await Sharing.shareAsync(file.uri, {
           mimeType: 'text/csv',
-          dialogTitle: 'Exporter les données',
+          dialogTitle: t('history.exportCsv'),
         });
       }
     } catch (error) {
       console.error('Export failed:', error);
-      RNAlert.alert('Erreur', "L'export a échoué.");
+      RNAlert.alert(t('common.error'), t('dataSettings.exportError'));
     }
-  }, [readings, selectedSensor, selectedPeriod]);
+  }, [readings, t, selectedSensor, selectedPeriod]);
 
     const renderReadingItem = useCallback(
     ({ item }: { item: SensorReading }) => (
@@ -133,12 +135,12 @@ export default function HistoryScreen() {
               { color: item.isAnomaly ? colors.error : colors.success },
             ]}
           >
-            {item.isAnomaly ? 'Anomalie' : 'Normal'}
+            {item.isAnomaly ? t('history.anomaly') : 'Normal'}
           </Text>
         </View>
       </View>
     ),
-    [colors]
+    [colors, t]
   );
 
   const keyExtractor = useCallback(
@@ -157,7 +159,7 @@ export default function HistoryScreen() {
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
-      <Header title="Historique" showStatus={false} />
+      <Header title={t('history.title')} showStatus={false} />
 
       <FlatList
         data={readings}
@@ -176,7 +178,7 @@ export default function HistoryScreen() {
               onPress={() => setShowSensorPicker(!showSensorPicker)}
             >
               <MaterialCommunityIcons
-                name={SENSOR_ICONS[selectedSensor] as keyof typeof MaterialCommunityIcons.glyphMap}
+                name={SENSOR_ICONS[selectedSensor]}
                 size={20}
                 color={SENSOR_COLORS[selectedSensor]}
               />
@@ -213,7 +215,7 @@ export default function HistoryScreen() {
                     }}
                   >
                     <MaterialCommunityIcons
-                      name={SENSOR_ICONS[type] as keyof typeof MaterialCommunityIcons.glyphMap}
+                      name={SENSOR_ICONS[type]}
                       size={18}
                       color={SENSOR_COLORS[type]}
                     />
@@ -290,36 +292,16 @@ export default function HistoryScreen() {
                 ]}
               >
                 <Text style={[styles.statsTitle, { color: colors.text }]}>
-                  Statistiques
+                  {t('history.statistics')}
                 </Text>
                 <View style={styles.statsGrid}>
-                  <StatBox
-                    label="Min"
-                    value={stats.min.toString()}
-                    colors={colors}
-                    icon="arrow-down"
-                  />
-                  <StatBox
-                    label="Max"
-                    value={stats.max.toString()}
-                    colors={colors}
-                    icon="arrow-up"
-                  />
-                  <StatBox
-                    label="Moyenne"
-                    value={stats.average.toString()}
-                    colors={colors}
-                    icon="approximately-equal"
-                  />
-                  <StatBox
-                    label="Écart-type"
-                    value={stats.standardDeviation.toString()}
-                    colors={colors}
-                    icon="sigma"
-                  />
+                  <StatBox label={t('history.min')} value={stats.min.toString()} colors={colors} icon="arrow-down" />
+                  <StatBox label={t('history.max')} value={stats.max.toString()} colors={colors} icon="arrow-up" />
+                  <StatBox label={t('history.average')} value={stats.average.toString()} colors={colors} icon="approximately-equal" />
+                  <StatBox label={t('history.stdDev')} value={stats.standardDeviation.toString()} colors={colors} icon="sigma" />
                 </View>
                 <Text style={[styles.statsCount, { color: colors.textTertiary }]}>
-                  {stats.count} mesures
+                  {stats.count} {t('history.readings')}
                 </Text>
               </View>
             )}
@@ -338,7 +320,7 @@ export default function HistoryScreen() {
                   size={18}
                   color={themeConfig.colors.white}
                 />
-                <Text style={styles.exportText}>Exporter en CSV</Text>
+                <Text style={styles.exportText}>{t('history.exportCsv')}</Text>
               </TouchableOpacity>
             )}
 
@@ -376,8 +358,7 @@ export default function HistoryScreen() {
                   color={colors.textTertiary}
                 />
                 <Text style={[styles.emptyText, { color: colors.textTertiary }]}>
-                  Aucune donnée pour cette période.{'\n'}Lancez la simulation
-                  depuis le dashboard.
+                  {t('history.noData')}
                 </Text>
               </View>
             )}
@@ -399,12 +380,12 @@ function StatBox({
   label: string;
   value: string;
   colors: Record<string, string>;
-  icon: string;
+  icon: MaterialIconName;
 }) {
   return (
     <View style={[statStyles.box, { backgroundColor: colors.surfaceElevated }]}>
       <MaterialCommunityIcons
-        name={icon as keyof typeof MaterialCommunityIcons.glyphMap}
+        name={icon}
         size={14}
         color={colors.primary}
       />
