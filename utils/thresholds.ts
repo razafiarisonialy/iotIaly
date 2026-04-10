@@ -1,12 +1,6 @@
-/**
- * Default threshold configurations for each sensor type.
- * These define when values are considered normal, warning, or critical.
- * Users can customize these via the Settings screen.
- */
 
 import type { ThresholdConfig } from '@/types';
 
-/** Default thresholds for all sensor types */
 export const DEFAULT_THRESHOLDS: ThresholdConfig[] = [
   {
     sensorType: 'temperature',
@@ -55,11 +49,6 @@ export const DEFAULT_THRESHOLDS: ThresholdConfig[] = [
   },
 ];
 
-/**
- * Get the default threshold config for a specific sensor type.
- * @param sensorType - The sensor type to look up
- * @returns The threshold configuration for the sensor
- */
 export function getDefaultThreshold(sensorType: string): ThresholdConfig {
   const threshold = DEFAULT_THRESHOLDS.find(
     (t) => t.sensorType === sensorType
@@ -70,13 +59,6 @@ export function getDefaultThreshold(sensorType: string): ThresholdConfig {
   return threshold;
 }
 
-/**
- * Determine the value status based on the current value and thresholds.
- * Returns 'normal', 'approaching' (within warning zone), or 'exceeded' (critical).
- * @param value - Current sensor value
- * @param threshold - Threshold configuration for the sensor
- * @returns The value status: 'normal', 'approaching', or 'exceeded'
- */
 export function getValueStatus(
   value: number,
   threshold: ThresholdConfig
@@ -90,13 +72,6 @@ export function getValueStatus(
   return 'normal';
 }
 
-/**
- * Calculate the percentage of how close a value is to its critical threshold.
- * Returns 0-100 where 100 means at or beyond the critical threshold.
- * @param value - Current sensor value
- * @param threshold - Threshold configuration for the sensor
- * @returns Percentage (0-100) of threshold proximity
- */
 export function getThresholdPercentage(
   value: number,
   threshold: ThresholdConfig

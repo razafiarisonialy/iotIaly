@@ -1,6 +1,3 @@
-/**
- * Header — App header component with date/time, system status, and title.
- */
 
 import React, { memo, useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
@@ -13,10 +10,8 @@ import { fr } from 'date-fns/locale';
 import { APP_NAME } from '@/utils/constants';
 
 interface HeaderProps {
-  /** Optional title override */
-  title?: string;
-  /** Whether to show the system status indicator */
-  showStatus?: boolean;
+    title?: string;
+    showStatus?: boolean;
 }
 
 function HeaderComponent({ title, showStatus = true }: HeaderProps) {
@@ -25,7 +20,7 @@ function HeaderComponent({ title, showStatus = true }: HeaderProps) {
   const systemStatus = useSystemStatus();
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // Update clock every second
+  
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);

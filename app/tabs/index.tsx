@@ -1,14 +1,3 @@
-/**
- * Dashboard — Main screen showing real-time sensor data.
- *
- * Layout:
- * - Header with date/time and system status
- * - Start/Stop simulation control
- * - 2×2 grid of SensorCards with sparklines
- * - Last 3 alerts (compact)
- * - Main line chart for selected sensor (last 30 minutes)
- * - Pull-to-refresh support
- */
 
 import React, { useCallback } from 'react';
 import {
@@ -29,6 +18,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { useAppStore, useSimulationRunning } from '@/store/appStore';
 import { SENSOR_LABELS, SENSOR_COLORS } from '@/utils/constants';
 import type { SensorType } from '@/types';
+import { themeConfig } from '@/constants/colors';
 
 const SENSOR_GRID: SensorType[] = [
   'temperature',
@@ -83,7 +73,7 @@ export default function DashboardScreen() {
           />
         }
       >
-        {/* Simulation Control */}
+        {}
         <TouchableOpacity
           style={[
             styles.simulationButton,
@@ -120,7 +110,7 @@ export default function DashboardScreen() {
           </Text>
         </TouchableOpacity>
 
-        {/* Weather Data (if available) */}
+        {}
         {weatherData && (
           <View
             style={[
@@ -140,7 +130,7 @@ export default function DashboardScreen() {
           </View>
         )}
 
-        {/* Sensor Grid 2×2 */}
+        {}
         <Text style={[styles.sectionTitle, { color: colors.text }]}>
           Capteurs en temps réel
         </Text>
@@ -154,14 +144,14 @@ export default function DashboardScreen() {
           ))}
         </View>
 
-        {/* Air Quality Card (full width) */}
+        {}
         <View style={styles.fullWidthCard}>
           <SensorCard sensorType="air_quality" onPress={handleSensorPress} />
         </View>
 
-        {/* Main Chart for Selected Sensor */}
+        {}
         <View style={[styles.chartSection, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-          {/* Sensor selector chips */}
+          {}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -193,7 +183,7 @@ export default function DashboardScreen() {
                     styles.chipText,
                     {
                       color:
-                        selectedSensor === type ? '#FFFFFF' : colors.textSecondary,
+                        selectedSensor === type ? themeConfig.colors.white : colors.textSecondary,
                     },
                   ]}
                 >
@@ -210,7 +200,7 @@ export default function DashboardScreen() {
             showAnomalies
           />
 
-          {/* Prediction info */}
+          {}
           {sensorState.prediction && sensorState.prediction.confidence > 0 && (
             <View style={styles.predictionRow}>
               <MaterialCommunityIcons
@@ -229,7 +219,7 @@ export default function DashboardScreen() {
           )}
         </View>
 
-        {/* Recent Alerts */}
+        {}
         {recentAlerts.length > 0 && (
           <View style={styles.alertsSection}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
@@ -241,7 +231,7 @@ export default function DashboardScreen() {
           </View>
         )}
 
-        {/* Bottom spacing */}
+        {}
         <View style={styles.bottomSpacer} />
       </ScrollView>
     </View>

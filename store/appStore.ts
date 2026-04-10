@@ -1,13 +1,3 @@
-/**
- * Global application state managed by Zustand.
- *
- * Contains:
- * - Current sensor readings and their recent history
- * - Active alerts and unread count
- * - App settings (theme, thresholds, simulation speed)
- * - System status derived from sensor states
- * - Actions for all state mutations
- */
 
 import { create } from 'zustand';
 import type {
@@ -27,11 +17,10 @@ import { SENSOR_UNIT_MAP } from '@/utils/constants';
 import { DEFAULT_THRESHOLDS, getValueStatus } from '@/utils/thresholds';
 import { getCurrentTimestamp } from '@/utils/helpers';
 
-// =============================================================================
-// State Shape
-// =============================================================================
 
-/** Current state for a single sensor in the store */
+
+
+
 interface SensorStoreState {
   currentValue: number;
   status: ValueStatus;
@@ -42,17 +31,16 @@ interface SensorStoreState {
   lastUpdated: string;
 }
 
-/** Complete application state */
 interface AppState {
-  // Sensor data
+  
   sensors: Record<SensorType, SensorStoreState>;
   selectedSensor: SensorType;
 
-  // Alerts
+  
   alerts: Alert[];
   unreadAlertCount: number;
 
-  // Settings
+  
   isDarkMode: boolean;
   alertsEnabled: boolean;
   simulationSpeed: SimulationSpeed;
@@ -62,17 +50,16 @@ interface AppState {
   weatherCity: string;
   thresholds: ThresholdConfig[];
 
-  // Weather
+  
   weatherData: WeatherData | null;
 
-  // System
+  
   systemStatus: SystemStatus;
   isDatabaseReady: boolean;
 }
 
-/** Actions available on the store */
 interface AppActions {
-  // Sensor actions
+  
   updateSensorValue: (
     sensorType: SensorType,
     value: number,
@@ -85,14 +72,14 @@ interface AppActions {
   ) => void;
   setSelectedSensor: (sensorType: SensorType) => void;
 
-  // Alert actions
+  
   addAlert: (alert: Alert) => void;
   acknowledgeAlert: (alertId: number) => void;
   acknowledgeAllAlerts: () => void;
   clearAlerts: () => void;
   setAlerts: (alerts: Alert[]) => void;
 
-  // Settings actions
+  
   setDarkMode: (isDark: boolean) => void;
   setAlertsEnabled: (enabled: boolean) => void;
   setSimulationSpeed: (speed: SimulationSpeed) => void;
@@ -103,20 +90,19 @@ interface AppActions {
   setThresholds: (thresholds: ThresholdConfig[]) => void;
   updateThreshold: (sensorType: SensorType, config: Partial<ThresholdConfig>) => void;
 
-  // Weather actions
+  
   setWeatherData: (data: WeatherData | null) => void;
 
-  // System actions
+  
   setDatabaseReady: (ready: boolean) => void;
   resetStore: () => void;
 }
 
-/** Combined store type */
 type AppStore = AppState & AppActions;
 
-// =============================================================================
-// Initial State
-// =============================================================================
+
+
+
 
 const createInitialSensorState = (): SensorStoreState => ({
   currentValue: 0,
@@ -128,16 +114,16 @@ const createInitialSensorState = (): SensorStoreState => ({
   lastUpdated: getCurrentTimestamp(),
 });
 
-const MAX_RECENT_VALUES = 60; // Keep last 60 values in memory
-const MAX_RECENT_READINGS = 200; // For charts
+const MAX_RECENT_VALUES = 60; 
+const MAX_RECENT_READINGS = 200; 
 const MAX_ALERTS_IN_STORE = 100;
 
-// =============================================================================
-// Store Definition
-// =============================================================================
+
+
+
 
 export const useAppStore = create<AppStore>((set, get) => ({
-  // --- Initial sensor state ---
+  
   sensors: {
     temperature: createInitialSensorState(),
     humidity: createInitialSensorState(),
@@ -147,11 +133,11 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
   selectedSensor: 'temperature',
 
-  // --- Initial alerts state ---
+  
   alerts: [],
   unreadAlertCount: 0,
 
-  // --- Initial settings ---
+  
   isDarkMode: true,
   alertsEnabled: true,
   simulationSpeed: 'normal',
@@ -161,14 +147,14 @@ export const useAppStore = create<AppStore>((set, get) => ({
   weatherCity: 'Antananarivo',
   thresholds: [...DEFAULT_THRESHOLDS],
 
-  // --- Weather ---
+  
   weatherData: null,
 
-  // --- System ---
+  
   systemStatus: 'normal',
   isDatabaseReady: false,
 
-  // === SENSOR ACTIONS ===
+  
 
   updateSensorValue: (sensorType, value, isAnomaly, reading) => {
     set((state) => {
@@ -178,12 +164,12 @@ export const useAppStore = create<AppStore>((set, get) => ({
       );
       const status = threshold ? getValueStatus(value, threshold) : 'normal';
 
-      // Append to recent values (cap at MAX)
+      
       const newRecentValues = [...sensor.recentValues, value].slice(
         -MAX_RECENT_VALUES
       );
 
-      // Append to recent readings if a full reading was provided
+      
       let newRecentReadings = sensor.recentReadings;
       if (reading) {
         newRecentReadings = [...sensor.recentReadings, reading].slice(
@@ -200,7 +186,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
         lastUpdated: getCurrentTimestamp(),
       };
 
-      // Determine system-wide status
+      
       const allSensors = {
         ...state.sensors,
         [sensorType]: updatedSensor,
@@ -231,7 +217,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     set({ selectedSensor: sensorType });
   },
 
-  // === ALERT ACTIONS ===
+  
 
   addAlert: (alert) => {
     set((state) => {
@@ -273,7 +259,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     set({ alerts, unreadAlertCount: unreadCount });
   },
 
-  // === SETTINGS ACTIONS ===
+  
 
   setDarkMode: (isDark) => set({ isDarkMode: isDark }),
   setAlertsEnabled: (enabled) => set({ alertsEnabled: enabled }),
@@ -293,11 +279,11 @@ export const useAppStore = create<AppStore>((set, get) => ({
     }));
   },
 
-  // === WEATHER ACTIONS ===
+  
 
   setWeatherData: (data) => set({ weatherData: data }),
 
-  // === SYSTEM ACTIONS ===
+  
 
   setDatabaseReady: (ready) => set({ isDatabaseReady: ready }),
 
@@ -317,16 +303,10 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
 }));
 
-// =============================================================================
-// Derived State Helpers
-// =============================================================================
 
-/**
- * Calculate overall system status from all sensor states.
- * If ANY sensor is 'exceeded' → critical.
- * If ANY sensor is 'approaching' → warning.
- * Otherwise → normal.
- */
+
+
+
 function calculateSystemStatus(
   sensors: Record<SensorType, SensorStoreState>
 ): SystemStatus {
@@ -337,30 +317,24 @@ function calculateSystemStatus(
   return 'normal';
 }
 
-// =============================================================================
-// Selector Hooks (for optimized re-renders)
-// =============================================================================
 
-/** Select a single sensor's state */
+
+
+
 export const useSensor = (type: SensorType) =>
   useAppStore((state) => state.sensors[type]);
 
-/** Select system status */
 export const useSystemStatus = () =>
   useAppStore((state) => state.systemStatus);
 
-/** Select current theme mode */
 export const useIsDarkMode = () =>
   useAppStore((state) => state.isDarkMode);
 
-/** Select unread alert count */
 export const useUnreadAlertCount = () =>
   useAppStore((state) => state.unreadAlertCount);
 
-/** Select all alerts */
 export const useAlerts = () =>
   useAppStore((state) => state.alerts);
 
-/** Select simulation running state */
 export const useSimulationRunning = () =>
   useAppStore((state) => state.simulationRunning);

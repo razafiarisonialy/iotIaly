@@ -1,7 +1,3 @@
-/**
- * StatusIndicator — Animated status dot with pulse effect.
- * Displays system health as green/orange/red with animated glow.
- */
 
 import React, { memo, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
@@ -14,19 +10,15 @@ import Animated, {
 } from 'react-native-reanimated';
 import { STATUS_COLORS } from '@/utils/constants';
 import type { SystemStatus } from '@/types';
+import { themeConfig } from '@/constants/colors';
 
 interface StatusIndicatorProps {
-  /** Current system status */
-  status: SystemStatus;
-  /** Optional label to display beside the dot */
-  label?: string;
-  /** Size of the status dot (default 12) */
-  size?: number;
-  /** Text color for the label */
-  textColor?: string;
+    status: SystemStatus;
+    label?: string;
+    size?: number;
+    textColor?: string;
 }
 
-/** Label mapping for status */
 const STATUS_LABELS: Record<SystemStatus, string> = {
   normal: 'Système normal',
   warning: 'Avertissement',
@@ -43,7 +35,7 @@ function StatusIndicatorComponent({
   const pulseScale = useSharedValue(1);
   const pulseOpacity = useSharedValue(0.6);
 
-  // Pulse animation for warning and critical states
+  
   useEffect(() => {
     if (status === 'normal') {
       pulseScale.value = 1;
@@ -73,7 +65,7 @@ function StatusIndicatorComponent({
   return (
     <View style={styles.container}>
       <View style={[styles.dotWrapper, { width: size * 2.5, height: size * 2.5 }]}>
-        {/* Pulse ring (only visible during warning/critical) */}
+        {}
         <Animated.View
           style={[
             styles.pulse,
@@ -86,7 +78,7 @@ function StatusIndicatorComponent({
             pulseStyle,
           ]}
         />
-        {/* Main dot */}
+        {}
         <View
           style={[
             styles.dot,
@@ -124,7 +116,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   dot: {
-    shadowColor: '#000',
+    shadowColor: themeConfig.colors.blackTransparent,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.3,
     shadowRadius: 2,

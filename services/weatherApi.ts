@@ -1,12 +1,3 @@
-/**
- * Weather API service for OpenWeatherMap integration.
- *
- * Features:
- * - Fetch current weather for Antananarivo (or configured city)
- * - 5-minute response caching to minimize API calls
- * - Robust error handling (timeout, quota, network)
- * - Comparison between real and simulated data
- */
 
 import Constants from 'expo-constants';
 import type { WeatherData, OpenWeatherMapResponse } from '@/types';
@@ -17,9 +8,9 @@ import {
   WEATHER_API_TIMEOUT_MS,
 } from '@/utils/constants';
 
-// =============================================================================
-// Cache
-// =============================================================================
+
+
+
 
 interface WeatherCache {
   data: WeatherData;
@@ -28,22 +19,17 @@ interface WeatherCache {
 
 let weatherCache: WeatherCache | null = null;
 
-// =============================================================================
-// API Functions
-// =============================================================================
 
-/**
- * Get the API key from environment or settings.
- * @param customKey - Optional custom API key from settings
- * @returns The API key string
- */
+
+
+
 function getApiKey(customKey?: string): string {
   if (customKey && customKey.length > 0) {
     return customKey;
   }
 
-  // Try to get from expo-constants (loaded from .env via app.json extra)
-  const envKey = Constants.expirationDate; // placeholder check
+  
+  const envKey = Constants.expirationDate; 
   const extraKey =
     (Constants.expoConfig?.extra as Record<string, string> | undefined)
       ?.weatherApiKey ?? '';
@@ -56,23 +42,12 @@ function getApiKey(customKey?: string): string {
   return 'YOUR_OPENWEATHERMAP_API_KEY_HERE';
 }
 
-/**
- * Fetch current weather data from OpenWeatherMap API.
- *
- * Uses metric units (°C) and French language for descriptions.
- * Results are cached for 5 minutes to minimize API calls.
- *
- * @param city - City name (default: Antananarivo)
- * @param apiKey - Optional custom API key
- * @param forceRefresh - If true, bypass the cache
- * @returns WeatherData object or null if request fails
- */
 export async function fetchWeather(
   city: string = DEFAULT_WEATHER_CITY,
   apiKey?: string,
   forceRefresh: boolean = false
 ): Promise<WeatherData | null> {
-  // Check cache (unless forced refresh)
+  
   if (
     !forceRefresh &&
     weatherCache &&
@@ -125,7 +100,7 @@ export async function fetchWeather(
       timestamp: new Date().toISOString(),
     };
 
-    // Update cache
+    
     weatherCache = {
       data: weatherData,
       timestamp: Date.now(),
@@ -142,12 +117,6 @@ export async function fetchWeather(
   }
 }
 
-/**
- * Test the connection to OpenWeatherMap API.
- * @param apiKey - The API key to test
- * @param city - The city to query (default: Antananarivo)
- * @returns True if the connection is successful
- */
 export async function testWeatherConnection(
   apiKey: string,
   city: string = DEFAULT_WEATHER_CITY
@@ -179,18 +148,10 @@ export async function testWeatherConnection(
   }
 }
 
-/**
- * Get the weather icon URL from OpenWeatherMap.
- * @param iconCode - The icon code from the API response
- * @returns URL to the weather icon image
- */
 export function getWeatherIconUrl(iconCode: string): string {
   return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 }
 
-/**
- * Clear the weather cache.
- */
 export function clearWeatherCache(): void {
   weatherCache = null;
 }

@@ -1,14 +1,3 @@
-/**
- * History — Sensor data history screen.
- *
- * Features:
- * - Sensor type selector (dropdown)
- * - Time period selector (1h, 6h, 24h, 7d, 30d)
- * - Interactive line chart with anomaly markers
- * - Virtualized FlatList of readings
- * - Statistics summary (min, max, avg, stdDev)
- * - CSV export via expo-sharing
- */
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import {
@@ -43,6 +32,7 @@ import {
   roundTo,
 } from '@/utils/helpers';
 import type { SensorType, SensorReading, TimePeriod, StatsSummary } from '@/types';
+import { themeConfig } from '@/constants/colors';
 
 const TIME_PERIODS: TimePeriod[] = ['1h', '6h', '24h', '7d', '30d'];
 
@@ -54,8 +44,7 @@ export default function HistoryScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [showSensorPicker, setShowSensorPicker] = useState(false);
 
-  /** Load readings from database for selected sensor and period */
-  const loadReadings = useCallback(async () => {
+    const loadReadings = useCallback(async () => {
     setIsLoading(true);
     try {
       const startDate = getStartDateForPeriod(selectedPeriod);
@@ -73,19 +62,18 @@ export default function HistoryScreen() {
     }
   }, [selectedSensor, selectedPeriod]);
 
-  // Reload when sensor or period changes
+  
   useEffect(() => {
     loadReadings();
   }, [loadReadings]);
 
-  // Calculate statistics
+  
   const stats: StatsSummary = useMemo(() => {
     const values = readings.map((r) => r.value);
     return calculateStats(values);
   }, [readings]);
 
-  /** Export readings as CSV */
-  const handleExport = useCallback(async () => {
+    const handleExport = useCallback(async () => {
     if (readings.length === 0) {
       RNAlert.alert('Aucune donnée', 'Pas de données à exporter.');
       return;
@@ -110,8 +98,7 @@ export default function HistoryScreen() {
     }
   }, [readings, selectedSensor, selectedPeriod]);
 
-  /** Render a single reading row */
-  const renderReadingItem = useCallback(
+    const renderReadingItem = useCallback(
     ({ item }: { item: SensorReading }) => (
       <View
         style={[
@@ -180,7 +167,7 @@ export default function HistoryScreen() {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <>
-            {/* Sensor Selector */}
+            {}
             <TouchableOpacity
               style={[
                 styles.sensorSelector,
@@ -203,7 +190,7 @@ export default function HistoryScreen() {
               />
             </TouchableOpacity>
 
-            {/* Sensor Picker Dropdown */}
+            {}
             {showSensorPicker && (
               <View
                 style={[
@@ -238,7 +225,7 @@ export default function HistoryScreen() {
               </View>
             )}
 
-            {/* Period Selector */}
+            {}
             <View style={styles.periodContainer}>
               {TIME_PERIODS.map((period) => (
                 <TouchableOpacity
@@ -264,7 +251,7 @@ export default function HistoryScreen() {
                       {
                         color:
                           selectedPeriod === period
-                            ? '#FFFFFF'
+                            ? themeConfig.colors.white
                             : colors.textSecondary,
                       },
                     ]}
@@ -275,7 +262,7 @@ export default function HistoryScreen() {
               ))}
             </View>
 
-            {/* Loading State */}
+            {}
             {isLoading && (
               <ActivityIndicator
                 size="large"
@@ -284,7 +271,7 @@ export default function HistoryScreen() {
               />
             )}
 
-            {/* Chart */}
+            {}
             {!isLoading && readings.length > 0 && (
               <LineChartSensor
                 sensorType={selectedSensor}
@@ -294,7 +281,7 @@ export default function HistoryScreen() {
               />
             )}
 
-            {/* Statistics */}
+            {}
             {!isLoading && readings.length > 0 && (
               <View
                 style={[
@@ -337,7 +324,7 @@ export default function HistoryScreen() {
               </View>
             )}
 
-            {/* Export Button */}
+            {}
             {readings.length > 0 && (
               <TouchableOpacity
                 style={[
@@ -349,13 +336,13 @@ export default function HistoryScreen() {
                 <MaterialCommunityIcons
                   name="file-export-outline"
                   size={18}
-                  color="#FFFFFF"
+                  color={themeConfig.colors.white}
                 />
                 <Text style={styles.exportText}>Exporter en CSV</Text>
               </TouchableOpacity>
             )}
 
-            {/* Table Header */}
+            {}
             {readings.length > 0 && (
               <View
                 style={[
@@ -403,7 +390,6 @@ export default function HistoryScreen() {
   );
 }
 
-/** Statistics box sub-component */
 function StatBox({
   label,
   value,
@@ -535,7 +521,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   exportText: {
-    color: '#FFFFFF',
+    color: themeConfig.colors.white,
     fontSize: 14,
     fontWeight: '700',
   },

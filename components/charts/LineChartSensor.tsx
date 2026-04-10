@@ -1,7 +1,3 @@
-/**
- * LineChartSensor — Interactive line chart for sensor time-series data.
- * Displays readings over time with anomaly point highlighting.
- */
 
 import React, { memo, useMemo } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
@@ -10,18 +6,14 @@ import { useTheme } from '@/hooks/useTheme';
 import { SENSOR_COLORS, SENSOR_LABELS } from '@/utils/constants';
 import { formatChartTime } from '@/utils/helpers';
 import type { SensorReading, SensorType } from '@/types';
+import { themeConfig } from '@/constants/colors';
 
 interface LineChartSensorProps {
-  /** The sensor type (for color and label) */
-  sensorType: SensorType;
-  /** Array of readings to plot */
-  readings: SensorReading[];
-  /** Chart height (default 220) */
-  height?: number;
-  /** Chart title override */
-  title?: string;
-  /** Whether to show anomaly dots */
-  showAnomalies?: boolean;
+    sensorType: SensorType;
+    readings: SensorReading[];
+    height?: number;
+    title?: string;
+    showAnomalies?: boolean;
 }
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -36,7 +28,7 @@ function LineChartSensorComponent({
   const { colors, isDarkMode } = useTheme();
   const sensorColor = SENSOR_COLORS[sensorType];
 
-  // Prepare chart data — take last 30 readings, sorted by time
+  
   const chartData = useMemo(() => {
     const sorted = [...readings]
       .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
@@ -93,9 +85,9 @@ function LineChartSensorComponent({
           width: 12,
           height: 12,
           borderRadius: 6,
-          backgroundColor: '#FF3B30',
+          backgroundColor: themeConfig.colors.red,
           borderWidth: 2,
-          borderColor: '#FFFFFF',
+          borderColor: themeConfig.colors.white,
         }}
       />
     );

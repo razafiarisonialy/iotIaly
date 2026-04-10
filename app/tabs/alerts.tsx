@@ -1,13 +1,3 @@
-/**
- * Alerts — Alert management center screen.
- *
- * Features:
- * - Filter tabs: All, Unacknowledged, Acknowledged
- * - Severity filter chips
- * - Alert list with acknowledge action
- * - Acknowledge all / clear all buttons
- * - Real-time unread count badge
- */
 
 import React, { useCallback } from 'react';
 import {
@@ -26,6 +16,7 @@ import { useAlerts } from '@/hooks/useAlerts';
 import { SEVERITY_COLORS } from '@/utils/constants';
 import type { Alert, SeverityLevel } from '@/types';
 import type { AlertFilter } from '@/hooks/useAlerts';
+import { themeConfig } from '@/constants/colors';
 
 const FILTER_TABS: { key: AlertFilter; label: string }[] = [
   { key: 'all', label: 'Toutes' },
@@ -113,7 +104,7 @@ export default function AlertsScreen() {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <>
-            {/* Unread count summary */}
+            {}
             {unreadCount > 0 && (
               <View
                 style={[
@@ -154,7 +145,7 @@ export default function AlertsScreen() {
                       styles.filterTabText,
                       {
                         color:
-                          filter === tab.key ? '#FFFFFF' : colors.textSecondary,
+                          filter === tab.key ? themeConfig.colors.white : colors.textSecondary,
                       },
                     ]}
                   >
@@ -164,7 +155,7 @@ export default function AlertsScreen() {
               ))}
             </View>
 
-            {/* Severity Filter */}
+            {}
             <View style={styles.severityFilter}>
               {SEVERITY_OPTIONS.map((option) => (
                 <TouchableOpacity
@@ -211,7 +202,7 @@ export default function AlertsScreen() {
               ))}
             </View>
 
-            {/* Action Buttons */}
+            {}
             <View style={styles.actionRow}>
               <TouchableOpacity
                 style={[

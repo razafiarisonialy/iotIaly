@@ -1,7 +1,3 @@
-/**
- * AlertBanner — Displays a single alert in a styled, dismissible banner.
- * Color-coded by severity (info, warning, critical).
- */
 
 import React, { memo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
@@ -12,22 +8,17 @@ import { formatRelativeTime } from '@/utils/helpers';
 import type { Alert, SeverityLevel } from '@/types';
 
 interface AlertBannerProps {
-  /** The alert to display */
-  alert: Alert;
-  /** Callback when the acknowledge button is pressed */
-  onAcknowledge?: (alertId: number) => void;
-  /** Whether to show a compact view (for dashboard) */
-  compact?: boolean;
+    alert: Alert;
+    onAcknowledge?: (alertId: number) => void;
+    compact?: boolean;
 }
 
-/** Icon mapping for severity levels */
 const SEVERITY_ICONS: Record<SeverityLevel, keyof typeof MaterialCommunityIcons.glyphMap> = {
   info: 'information-outline',
   warning: 'alert-outline',
   critical: 'alert-circle-outline',
 };
 
-/** Severity label mapping */
 const SEVERITY_LABELS: Record<SeverityLevel, string> = {
   info: 'Info',
   warning: 'Avertissement',
@@ -83,7 +74,7 @@ function AlertBannerComponent({
         },
       ]}
     >
-      {/* Header: Icon + Severity Badge + Time */}
+      {}
       <View style={styles.headerRow}>
         <View style={styles.headerLeft}>
           <View
@@ -107,12 +98,12 @@ function AlertBannerComponent({
         </Text>
       </View>
 
-      {/* Message */}
+      {}
       <Text style={[styles.message, { color: colors.text }]}>
         {alert.message}
       </Text>
 
-      {/* Footer: Sensor Type + Acknowledge */}
+      {}
       <View style={styles.footerRow}>
         <View
           style={[styles.sensorBadge, { backgroundColor: colors.surfaceElevated }]}
@@ -236,7 +227,7 @@ const styles = StyleSheet.create({
   acknowledgedText: {
     fontSize: 11,
   },
-  // Compact variant
+  
   compactBanner: {
     flexDirection: 'row',
     alignItems: 'center',

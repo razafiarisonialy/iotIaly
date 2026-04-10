@@ -1,13 +1,10 @@
-/**
- * Tab Layout — Defines the bottom tab navigation with 4 tabs.
- * Dashboard | History | Alerts (with badge) | Settings
- */
 
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { useUnreadAlertCount } from '@/store/appStore';
+import { themeConfig } from '@/constants/colors';
 
 export default function TabLayout() {
   const { colors } = useTheme();
@@ -66,7 +63,7 @@ export default function TabLayout() {
           tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
           tabBarBadgeStyle: {
             backgroundColor: colors.error,
-            color: '#FFFFFF',
+            color: themeConfig.colors.white,
             fontSize: 10,
             fontWeight: '700',
             minWidth: 18,

@@ -1,9 +1,3 @@
-/**
- * SensorCard — Displays real-time sensor data in a styled card.
- *
- * Shows: icon, current value, unit, status color, trend indicator,
- * and a mini sparkline chart of recent values.
- */
 
 import React, { memo, useMemo } from 'react';
 import {
@@ -22,20 +16,15 @@ import { STATUS_COLORS } from '@/utils/constants';
 import { formatSensorValue, getStatusLabel } from '@/utils/helpers';
 import { getTrendDescription } from '@/services/aiEngine';
 import type { SensorType } from '@/types';
+import { themeConfig } from '@/constants/colors';
 
 interface SensorCardProps {
-  /** The sensor type to display */
-  sensorType: SensorType;
-  /** Callback when the card is tapped */
-  onPress?: (sensorType: SensorType) => void;
+    sensorType: SensorType;
+    onPress?: (sensorType: SensorType) => void;
 }
 
 const CARD_WIDTH = (Dimensions.get('window').width - 48) / 2;
 
-/**
- * A card component displaying real-time sensor data with sparkline.
- * Uses React.memo for performance — only re-renders when sensor data changes.
- */
 function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
   const { colors } = useTheme();
   const sensor = useSensor(sensorType);
@@ -52,7 +41,7 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
     ? getTrendDescription(sensor.trend, sensor.prediction.slope)
     : '→ Stable';
 
-  // Prepare sparkline data (last 15 values)
+  
   const sparklineData = useMemo(() => {
     const values = sensor.recentValues.slice(-15);
     if (values.length < 2) return [0, 0];
@@ -171,7 +160,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderLeftWidth: 4,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: themeConfig.colors.blackTransparent,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 8,

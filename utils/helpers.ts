@@ -1,7 +1,3 @@
-/**
- * Utility helper functions used across the IoT/AIoT application.
- * Includes date formatting, data conversion, validation, and math utilities.
- */
 
 import { format, formatDistanceToNow, parseISO, subHours, subDays } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -16,42 +12,22 @@ import type {
   SeverityLevel,
 } from '@/types';
 
-// =============================================================================
-// Date Formatting
-// =============================================================================
 
-/**
- * Format a date to a localized short datetime string.
- * @param dateString - ISO 8601 date string
- * @returns Formatted string like "10 avr. 2026, 14:30"
- */
+
+
+
 export function formatDateTime(dateString: string): string {
   return format(parseISO(dateString), 'dd MMM yyyy, HH:mm', { locale: fr });
 }
 
-/**
- * Format a date to time only.
- * @param dateString - ISO 8601 date string
- * @returns Formatted string like "14:30:45"
- */
 export function formatTime(dateString: string): string {
   return format(parseISO(dateString), 'HH:mm:ss');
 }
 
-/**
- * Format a date to a short time for chart labels.
- * @param dateString - ISO 8601 date string
- * @returns Formatted string like "14:30"
- */
 export function formatChartTime(dateString: string): string {
   return format(parseISO(dateString), 'HH:mm');
 }
 
-/**
- * Get a human-readable relative time string.
- * @param dateString - ISO 8601 date string
- * @returns String like "il y a 5 minutes"
- */
 export function formatRelativeTime(dateString: string): string {
   return formatDistanceToNow(parseISO(dateString), {
     addSuffix: true,
@@ -59,19 +35,10 @@ export function formatRelativeTime(dateString: string): string {
   });
 }
 
-/**
- * Get the current date/time as an ISO 8601 string.
- * @returns Current ISO timestamp
- */
 export function getCurrentTimestamp(): string {
   return new Date().toISOString();
 }
 
-/**
- * Get the start date for a given time period from now.
- * @param period - Time period to go back
- * @returns ISO timestamp string for the start of the period
- */
 export function getStartDateForPeriod(period: TimePeriod): string {
   const now = new Date();
   switch (period) {
@@ -88,16 +55,10 @@ export function getStartDateForPeriod(period: TimePeriod): string {
   }
 }
 
-// =============================================================================
-// Database Row Mapping
-// =============================================================================
 
-/**
- * Convert a SQLite row to a SensorReading object.
- * Maps snake_case columns to camelCase properties.
- * @param row - Raw SQLite row
- * @returns Typed SensorReading object
- */
+
+
+
 export function mapRowToSensorReading(row: SensorReadingRow): SensorReading {
   return {
     id: row.id,
@@ -109,12 +70,6 @@ export function mapRowToSensorReading(row: SensorReadingRow): SensorReading {
   };
 }
 
-/**
- * Convert a SQLite row to an Alert object.
- * Maps snake_case columns to camelCase properties.
- * @param row - Raw SQLite row
- * @returns Typed Alert object
- */
 export function mapRowToAlert(row: AlertRow): Alert {
   return {
     id: row.id,
@@ -126,38 +81,19 @@ export function mapRowToAlert(row: AlertRow): Alert {
   };
 }
 
-// =============================================================================
-// Math Utilities
-// =============================================================================
 
-/**
- * Clamp a number between a minimum and maximum value.
- * @param value - The value to clamp
- * @param min - Minimum allowed value
- * @param max - Maximum allowed value
- * @returns Clamped value
- */
+
+
+
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
-/**
- * Round a number to a specified number of decimal places.
- * @param value - The value to round
- * @param decimals - Number of decimal places (default: 1)
- * @returns Rounded value
- */
 export function roundTo(value: number, decimals: number = 1): number {
   const factor = Math.pow(10, decimals);
   return Math.round(value * factor) / factor;
 }
 
-/**
- * Generate a random number following a Gaussian distribution using Box-Muller.
- * @param mean - Mean of the distribution
- * @param stdDev - Standard deviation
- * @returns Random number from Gaussian distribution
- */
 export function gaussianRandom(mean: number, stdDev: number): number {
   const u1 = Math.random();
   const u2 = Math.random();
@@ -165,11 +101,6 @@ export function gaussianRandom(mean: number, stdDev: number): number {
   return z0 * stdDev + mean;
 }
 
-/**
- * Calculate statistics summary for an array of numbers.
- * @param values - Array of numeric values
- * @returns Statistical summary (min, max, average, stdDev, count)
- */
 export function calculateStats(values: number[]): StatsSummary {
   if (values.length === 0) {
     return { min: 0, max: 0, average: 0, standardDeviation: 0, count: 0 };
@@ -195,17 +126,10 @@ export function calculateStats(values: number[]): StatsSummary {
   };
 }
 
-// =============================================================================
-// Value Formatting
-// =============================================================================
 
-/**
- * Format a sensor value for display with appropriate precision.
- * Motion sensor shows "Oui"/"Non" instead of numbers.
- * @param value - The sensor value
- * @param sensorType - The type of sensor
- * @returns Formatted display string
- */
+
+
+
 export function formatSensorValue(
   value: number,
   sensorType: SensorType
@@ -224,12 +148,6 @@ export function formatSensorValue(
   }
 }
 
-/**
- * Get a descriptive label for a sensor value status.
- * @param sensorType - Type of sensor
- * @param value - Current value
- * @returns Human-readable status description
- */
 export function getStatusLabel(sensorType: SensorType, value: number): string {
   switch (sensorType) {
     case 'temperature':
@@ -259,27 +177,16 @@ export function getStatusLabel(sensorType: SensorType, value: number): string {
   }
 }
 
-// =============================================================================
-// Validation
-// =============================================================================
 
-/**
- * Validate that a string is a valid sensor type.
- * @param value - String to validate
- * @returns True if the string is a valid SensorType
- */
+
+
+
 export function isValidSensorType(value: string): value is SensorType {
   return ['temperature', 'humidity', 'motion', 'energy', 'air_quality'].includes(
     value
   );
 }
 
-/**
- * Validate that a number is within a reasonable range for a sensor type.
- * @param value - Value to validate
- * @param sensorType - Type of sensor
- * @returns True if the value is within acceptable range
- */
 export function isValidSensorValue(
   value: number,
   sensorType: SensorType
@@ -299,11 +206,6 @@ export function isValidSensorValue(
   }
 }
 
-/**
- * Sanitize a string for safe SQLite insertion.
- * @param input - Raw string input
- * @returns Sanitized string
- */
 export function sanitizeString(input: string): string {
   return input.replace(/['";\-\-]/g, '').trim();
 }
@@ -328,11 +230,6 @@ export function readingsToCSV(readings: SensorReading[]): string {
   return headers + rows;
 }
 
-/**
- * Convert an array of alerts to CSV format.
- * @param alerts - Array of alerts
- * @returns CSV string with headers
- */
 export function alertsToCSV(alerts: Alert[]): string {
   const headers = 'ID,Capteur,Message,Sévérité,Date/Heure,Acquittée\n';
   const rows = alerts

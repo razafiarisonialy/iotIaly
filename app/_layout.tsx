@@ -1,13 +1,3 @@
-/**
- * Root Layout — Application entry point.
- *
- * Responsibilities:
- * - Initialize SQLite database
- * - Load theme preference
- * - Start sensor simulation pipeline
- * - Show splash screen until ready
- * - Provide navigation stack
- */
 
 import React, { useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
@@ -20,22 +10,23 @@ import { useDatabase } from '@/hooks/useDatabase';
 import { useTheme } from '@/hooks/useTheme';
 import { useSensorData } from '@/hooks/useSensorData';
 import { useAppStore } from '@/store/appStore';
+import { themeConfig } from '@/constants/colors';
 
-// Prevent splash screen from auto-hiding
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const { isReady: isDatabaseReady, error } = useDatabase();
   const setDatabaseReady = useAppStore((s) => s.setDatabaseReady);
 
-  // Mark database ready in store
+  
   useEffect(() => {
     if (isDatabaseReady) {
       setDatabaseReady(true);
     }
   }, [isDatabaseReady, setDatabaseReady]);
 
-  // Hide splash screen when database is ready
+  
   useEffect(() => {
     if (isDatabaseReady) {
       SplashScreen.hideAsync();
@@ -54,7 +45,7 @@ export default function RootLayout() {
   if (!isDatabaseReady) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0A84FF" />
+        <ActivityIndicator size="large" color={themeConfig.colors.primaryBlue} />
         <Text style={styles.loadingText}>Initialisation...</Text>
       </View>
     );
@@ -63,16 +54,11 @@ export default function RootLayout() {
   return <AppContent />;
 }
 
-/**
- * Inner app content — only renders after database is ready.
- * This separation ensures hooks that depend on the database
- * are only called when the database is initialized.
- */
 function AppContent() {
   const { colors, isDarkMode } = useTheme();
   const isDatabaseReady = useAppStore((s) => s.isDatabaseReady);
 
-  // Start the sensor simulation pipeline
+  
   useSensorData(isDatabaseReady);
 
   return (
@@ -95,11 +81,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000000',
+    backgroundColor: themeConfig.colors.black,
     gap: 16,
   },
   loadingText: {
-    color: '#FFFFFF',
+    color: themeConfig.colors.white,
     fontSize: 16,
     fontWeight: '500',
   },
@@ -107,17 +93,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000000',
+    backgroundColor: themeConfig.colors.black,
     padding: 24,
     gap: 12,
   },
   errorTitle: {
-    color: '#FF3B30',
+    color: themeConfig.colors.red,
     fontSize: 18,
     fontWeight: '700',
   },
   errorMessage: {
-    color: '#98989D',
+    color: themeConfig.colors.gray,
     fontSize: 14,
     textAlign: 'center',
   },

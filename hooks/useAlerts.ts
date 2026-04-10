@@ -1,12 +1,3 @@
-/**
- * Alert management hook for the alerts screen.
- *
- * Provides alert data and actions:
- * - Load alerts from database
- * - Acknowledge individual or all alerts
- * - Filter by status and severity
- * - Real-time unread count
- */
 
 import { useState, useCallback, useEffect } from 'react';
 import { useAppStore } from '@/store/appStore';
@@ -19,41 +10,22 @@ import {
 } from '@/services/database';
 import type { Alert, SeverityLevel } from '@/types';
 
-/** Filter mode for the alerts list */
 export type AlertFilter = 'all' | 'unacknowledged' | 'acknowledged';
 
-/** Return type of the useAlerts hook */
 interface UseAlertsReturn {
-  /** Current filtered list of alerts */
-  alerts: Alert[];
-  /** Total unacknowledged alert count */
-  unreadCount: number;
-  /** Current filter mode */
-  filter: AlertFilter;
-  /** Current severity filter (null = all severities) */
-  severityFilter: SeverityLevel | null;
-  /** Whether alerts are being loaded */
-  isLoading: boolean;
-  /** Set the filter mode */
-  setFilter: (filter: AlertFilter) => void;
-  /** Set severity filter */
-  setSeverityFilter: (severity: SeverityLevel | null) => void;
-  /** Acknowledge a single alert */
-  acknowledge: (alertId: number) => Promise<void>;
-  /** Acknowledge all alerts */
-  acknowledgeAll: () => Promise<void>;
-  /** Delete all alerts */
-  clearAll: () => Promise<void>;
-  /** Refresh alerts from database */
-  refresh: () => Promise<void>;
+    alerts: Alert[];
+    unreadCount: number;
+    filter: AlertFilter;
+    severityFilter: SeverityLevel | null;
+    isLoading: boolean;
+    setFilter: (filter: AlertFilter) => void;
+    setSeverityFilter: (severity: SeverityLevel | null) => void;
+    acknowledge: (alertId: number) => Promise<void>;
+    acknowledgeAll: () => Promise<void>;
+    clearAll: () => Promise<void>;
+    refresh: () => Promise<void>;
 }
 
-/**
- * Hook for managing alerts with filtering and persistence.
- *
- * @param autoLoad - Whether to load alerts on mount (default true)
- * @returns Alert state and controls
- */
 export function useAlerts(autoLoad: boolean = true): UseAlertsReturn {
   const storeAlerts = useAppStore((s) => s.alerts);
   const unreadCount = useAppStore((s) => s.unreadAlertCount);
@@ -69,8 +41,7 @@ export function useAlerts(autoLoad: boolean = true): UseAlertsReturn {
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  /** Load alerts from database into store */
-  const refresh = useCallback(async () => {
+    const refresh = useCallback(async () => {
     if (!isDatabaseReady) return;
     setIsLoading(true);
     try {
@@ -83,15 +54,14 @@ export function useAlerts(autoLoad: boolean = true): UseAlertsReturn {
     }
   }, [isDatabaseReady, storeSetAlerts]);
 
-  // Auto-load on mount
+  
   useEffect(() => {
     if (autoLoad && isDatabaseReady) {
       refresh();
     }
   }, [autoLoad, isDatabaseReady, refresh]);
 
-  /** Acknowledge a single alert in both store and database */
-  const acknowledge = useCallback(
+    const acknowledge = useCallback(
     async (alertId: number) => {
       storeAcknowledge(alertId);
       try {
@@ -103,8 +73,7 @@ export function useAlerts(autoLoad: boolean = true): UseAlertsReturn {
     [storeAcknowledge]
   );
 
-  /** Acknowledge all alerts in both store and database */
-  const acknowledgeAll = useCallback(async () => {
+    const acknowledgeAll = useCallback(async () => {
     storeAcknowledgeAll();
     try {
       await dbAcknowledgeAll();
@@ -113,8 +82,7 @@ export function useAlerts(autoLoad: boolean = true): UseAlertsReturn {
     }
   }, [storeAcknowledgeAll]);
 
-  /** Clear all alerts from both store and database */
-  const clearAll = useCallback(async () => {
+    const clearAll = useCallback(async () => {
     storeClear();
     try {
       await purgeAllAlerts();
@@ -123,7 +91,7 @@ export function useAlerts(autoLoad: boolean = true): UseAlertsReturn {
     }
   }, [storeClear]);
 
-  // Apply filters on the store alerts
+  
   let filteredAlerts = storeAlerts;
 
   if (filter === 'unacknowledged') {

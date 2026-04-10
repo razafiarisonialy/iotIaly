@@ -1,14 +1,3 @@
-/**
- * Settings — Application preferences and configuration screen.
- *
- * Sections:
- * 1. Sensor Thresholds — Sliders per sensor type
- * 2. Appearance — Dark/Light theme toggle
- * 3. Notifications — Alert toggles, simulation speed
- * 4. API — Weather API key input, connection test
- * 5. Data — Export, purge database
- * 6. About — Version, credits
- */
 
 import React, { useState, useCallback } from 'react';
 import {
@@ -46,6 +35,7 @@ import {
 } from '@/utils/constants';
 import { readingsToCSV, alertsToCSV } from '@/utils/helpers';
 import type { SimulationSpeed } from '@/types';
+import { themeConfig } from '@/constants/colors';
 
 const SPEED_OPTIONS: { key: SimulationSpeed; label: string }[] = [
   { key: 'fast', label: 'Rapide (2s)' },
@@ -76,8 +66,7 @@ export default function SettingsScreen() {
   const [dbSize, setDbSize] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
 
-  /** Load database size */
-  const loadDbSize = useCallback(async () => {
+    const loadDbSize = useCallback(async () => {
     try {
       const size = await getDatabaseSize();
       setDbSize(formatDatabaseSize(size));
@@ -90,8 +79,7 @@ export default function SettingsScreen() {
     loadDbSize();
   }, [loadDbSize]);
 
-  /** Test weather API connection */
-  const handleTestApi = useCallback(async () => {
+    const handleTestApi = useCallback(async () => {
     setTestingApi(true);
     setTestResult(null);
     try {
@@ -110,8 +98,7 @@ export default function SettingsScreen() {
     }
   }, [apiKeyInput, cityInput, setWeatherApiKey, setWeatherCity]);
 
-  /** Toggle alerts enabled */
-  const handleToggleAlerts = useCallback(
+    const handleToggleAlerts = useCallback(
     async (value: boolean) => {
       setAlertsEnabled(value);
       await setSetting('alerts_enabled', value.toString());
@@ -119,8 +106,7 @@ export default function SettingsScreen() {
     [setAlertsEnabled]
   );
 
-  /** Change simulation speed */
-  const handleSpeedChange = useCallback(
+    const handleSpeedChange = useCallback(
     async (speed: SimulationSpeed) => {
       setSimulationSpeed(speed);
       await setSetting('simulation_speed', speed);
@@ -128,8 +114,7 @@ export default function SettingsScreen() {
     [setSimulationSpeed]
   );
 
-  /** Toggle real weather */
-  const handleToggleWeather = useCallback(
+    const handleToggleWeather = useCallback(
     async (value: boolean) => {
       setUseRealWeather(value);
       await setSetting('use_real_weather', value.toString());
@@ -137,8 +122,7 @@ export default function SettingsScreen() {
     [setUseRealWeather]
   );
 
-  /** Export all data */
-  const handleExportAll = useCallback(async () => {
+    const handleExportAll = useCallback(async () => {
     setExporting(true);
     try {
       const readings = await getReadings(undefined, 10000);
@@ -166,8 +150,7 @@ export default function SettingsScreen() {
     }
   }, []);
 
-  /** Purge all data */
-  const handlePurge = useCallback(() => {
+    const handlePurge = useCallback(() => {
     RNAlert.alert(
       'Purger toutes les données',
       "Cette action supprimera toutes les mesures et alertes. Les paramètres seront conservés.\n\nCette action est irréversible.",
@@ -202,7 +185,7 @@ export default function SettingsScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* === SECTION: Appearance === */}
+        {}
         <SectionHeader title="Apparence" icon="palette-outline" colors={colors} />
         <View
           style={[
@@ -224,11 +207,11 @@ export default function SettingsScreen() {
             value={isDarkMode}
             onValueChange={toggleTheme}
             trackColor={{ false: colors.border, true: colors.primary }}
-            thumbColor="#FFFFFF"
+            thumbColor={themeConfig.colors.white}
           />
         </View>
 
-        {/* === SECTION: Notifications === */}
+        {}
         <SectionHeader
           title="Notifications"
           icon="bell-outline"
@@ -254,11 +237,11 @@ export default function SettingsScreen() {
             value={alertsEnabled}
             onValueChange={handleToggleAlerts}
             trackColor={{ false: colors.border, true: colors.primary }}
-            thumbColor="#FFFFFF"
+            thumbColor={themeConfig.colors.white}
           />
         </View>
 
-        {/* Simulation Speed */}
+        {}
         <Text style={[styles.subLabel, { color: colors.textSecondary }]}>
           Fréquence de simulation
         </Text>
@@ -287,7 +270,7 @@ export default function SettingsScreen() {
                   {
                     color:
                       simulationSpeed === option.key
-                        ? '#FFFFFF'
+                        ? themeConfig.colors.white
                         : colors.textSecondary,
                   },
                 ]}
@@ -298,7 +281,7 @@ export default function SettingsScreen() {
           ))}
         </View>
 
-        {/* === SECTION: Thresholds === */}
+        {}
         <SectionHeader
           title="Seuils des capteurs"
           icon="tune-vertical"
@@ -406,7 +389,7 @@ export default function SettingsScreen() {
             </View>
           ))}
 
-        {/* === SECTION: API === */}
+        {}
         <SectionHeader
           title="API Externe"
           icon="cloud-outline"
@@ -432,7 +415,7 @@ export default function SettingsScreen() {
             value={useRealWeather}
             onValueChange={handleToggleWeather}
             trackColor={{ false: colors.border, true: colors.primary }}
-            thumbColor="#FFFFFF"
+            thumbColor={themeConfig.colors.white}
           />
         </View>
 
@@ -492,13 +475,13 @@ export default function SettingsScreen() {
             disabled={testingApi}
           >
             {testingApi ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
+              <ActivityIndicator size="small" color={themeConfig.colors.white} />
             ) : (
               <>
                 <MaterialCommunityIcons
                   name="connection"
                   size={16}
-                  color="#FFFFFF"
+                  color={themeConfig.colors.white}
                 />
                 <Text style={styles.testButtonText}>
                   Tester la connexion
@@ -523,7 +506,7 @@ export default function SettingsScreen() {
           )}
         </View>
 
-        {/* === SECTION: Data === */}
+        {}
         <SectionHeader
           title="Données"
           icon="database-outline"
@@ -544,13 +527,13 @@ export default function SettingsScreen() {
             disabled={exporting}
           >
             {exporting ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
+              <ActivityIndicator size="small" color={themeConfig.colors.white} />
             ) : (
               <>
                 <MaterialCommunityIcons
                   name="database-export-outline"
                   size={18}
-                  color="#FFFFFF"
+                  color={themeConfig.colors.white}
                 />
                 <Text style={styles.dataButtonText}>
                   Exporter toutes les données
@@ -569,7 +552,7 @@ export default function SettingsScreen() {
             <MaterialCommunityIcons
               name="delete-forever-outline"
               size={18}
-              color="#FFFFFF"
+              color={themeConfig.colors.white}
             />
             <Text style={styles.dataButtonText}>
               Purger l'historique
@@ -577,7 +560,7 @@ export default function SettingsScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* === SECTION: About === */}
+        {}
         <SectionHeader title="À propos" icon="information-outline" colors={colors} />
         <View
           style={[
@@ -612,7 +595,6 @@ export default function SettingsScreen() {
   );
 }
 
-/** Section header sub-component */
 function SectionHeader({
   title,
   icon,
@@ -775,7 +757,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   testButtonText: {
-    color: '#FFFFFF',
+    color: themeConfig.colors.white,
     fontSize: 13,
     fontWeight: '700',
   },
@@ -803,7 +785,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   dataButtonText: {
-    color: '#FFFFFF',
+    color: themeConfig.colors.white,
     fontSize: 14,
     fontWeight: '700',
   },
@@ -830,7 +812,7 @@ const styles = StyleSheet.create({
   aboutDivider: {
     height: 1,
     width: '80%',
-    backgroundColor: '#38383A',
+    backgroundColor: themeConfig.colors.darkGray,
     marginVertical: 12,
   },
   aboutCredit: {
