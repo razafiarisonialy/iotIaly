@@ -20,6 +20,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "permissions": [
+        "INTERNET",
         "VIBRATE"
       ]
     },
