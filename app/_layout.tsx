@@ -15,7 +15,7 @@ import { useAppStore } from '@/store/appStore';
 
 import '@/services/i18n';
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(() => { });
 
 export default function RootLayout() {
   const { isReady: isDatabaseReady, error } = useDatabase();
@@ -26,8 +26,8 @@ export default function RootLayout() {
   }, [isDatabaseReady, setDatabaseReady]);
 
   useEffect(() => {
-    if (isDatabaseReady || error) SplashScreen.hideAsync();
-  }, [isDatabaseReady, error]);
+    SplashScreen.hideAsync().catch(() => { });
+  }, []);
 
   // Sécurité : force le masquage du splash après 10s max (ex: DB bloquée)
   useEffect(() => {
@@ -64,25 +64,25 @@ function AppContent() {
 
   const paperTheme = isDarkMode
     ? {
-        ...MD3DarkTheme,
-        colors: {
-          ...MD3DarkTheme.colors,
-          primary: colors.primary,
-          background: colors.background,
-          surface: colors.surface,
-          error: colors.error,
-        },
-      }
+      ...MD3DarkTheme,
+      colors: {
+        ...MD3DarkTheme.colors,
+        primary: colors.primary,
+        background: colors.background,
+        surface: colors.surface,
+        error: colors.error,
+      },
+    }
     : {
-        ...MD3LightTheme,
-        colors: {
-          ...MD3LightTheme.colors,
-          primary: colors.primary,
-          background: colors.background,
-          surface: colors.surface,
-          error: colors.error,
-        },
-      };
+      ...MD3LightTheme,
+      colors: {
+        ...MD3LightTheme.colors,
+        primary: colors.primary,
+        background: colors.background,
+        surface: colors.surface,
+        error: colors.error,
+      },
+    };
 
   return (
     <PaperProvider theme={paperTheme}>

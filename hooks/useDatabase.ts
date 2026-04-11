@@ -1,48 +1,42 @@
-
-import { useState, useEffect, useCallback } from 'react';
-import { initializeDatabase, closeDatabase } from '@/services/database';
+import { initializeDatabase } from '@/services/database';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseDatabaseState {
-    isReady: boolean;
-    error: Error | null;
-    retry: () => void;
+  isReady: boolean;
+  error: Error | null;
+  retry: () => void;
 }
 
 export function useDatabase(): UseDatabaseState {
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const mountedRef = useRef(true);
 
   const initialize = useCallback(async () => {
     try {
-      setError(null);
-      setIsReady(false);
-
-      const timeout = new Promise<never>((_, reject) =>
-        setTimeout(
-          () => reject(new Error('Délai dépassé : base de données non disponible')),
-          8000
-        )
-      );
-      await Promise.race([initializeDatabase(), timeout]);
-
-      setIsReady(true);
+      if (mountedRef.current) {
+        setError(null);
+        setIsReady(false);
+      }
+      await initializeDatabase();
+      if (mountedRef.current) setIsReady(true);
     } catch (initError) {
       console.error('Database initialization failed:', initError);
-      setError(
-        initError instanceof Error
-          ? initError
-          : new Error('Failed to initialize database')
-      );
+      if (mountedRef.current) {
+        setError(
+          initError instanceof Error
+            ? initError
+            : new Error('Failed to initialize database')
+        );
+      }
     }
   }, []);
 
   useEffect(() => {
+    mountedRef.current = true;
     initialize();
-
     return () => {
-      closeDatabase().catch((closeError) => {
-        console.error('Failed to close database:', closeError);
-      });
+      mountedRef.current = false;
     };
   }, [initialize]);
 

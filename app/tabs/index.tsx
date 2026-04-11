@@ -12,8 +12,8 @@ import {
   Image,
   Platform,
   RefreshControl,
+  StatusBar as RNStatusBar,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -337,9 +337,9 @@ function EmptyState({
 }
 
 const styles = StyleSheet.create({
-  screen: { 
-    flex: 1, 
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 44,
+  screen: {
+    flex: 1,
+    paddingTop: Platform.OS === 'android' ? RNStatusBar.currentHeight : 44,
   },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
   loadingText: { marginTop: 12, fontSize: 15 },
