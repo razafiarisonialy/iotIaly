@@ -1,11 +1,11 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Localization from 'expo-localization';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
 import en from '../locales/en.json';
-import fr from '../locales/fr.json';
 import es from '../locales/es.json';
+import fr from '../locales/fr.json';
 
 export const LANGUAGE_KEY = 'app_language';
 export const SUPPORTED_LANGUAGES = ['en', 'fr', 'es'] as const;
@@ -30,11 +30,11 @@ const languageDetector = {
       callback('fr');
     }
   },
-  init: () => {},
+  init: () => { },
   cacheUserLanguage: async (language: string) => {
     try {
       await AsyncStorage.setItem(LANGUAGE_KEY, language);
-    } catch {}
+    } catch { }
   },
 };
 
@@ -48,10 +48,14 @@ i18n
       es: { translation: es },
     },
     fallbackLng: 'fr',
+    lng: 'fr',
     interpolation: {
       escapeValue: false,
     },
     compatibilityJSON: 'v4',
+  })
+  .catch((err) => {
+    console.error('i18n init failed:', err);
   });
 
 export default i18n;

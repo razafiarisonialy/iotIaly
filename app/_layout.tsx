@@ -1,23 +1,18 @@
 
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
+import { themeConfig } from '@/constants/colors';
+import { useDatabase } from '@/hooks/useDatabase';
+import { useSensorData } from '@/hooks/useSensorData';
+import { useTheme } from '@/hooks/useTheme';
+import '@/services/i18n';
+import { useAppStore } from '@/store/appStore';
+import { SplashScreen, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import 'react-native-reanimated';
 
-import { themeConfig } from '@/constants/colors';
-import { useDatabase } from '@/hooks/useDatabase';
-import { useSensorData } from '@/hooks/useSensorData';
-import { useTheme } from '@/hooks/useTheme';
-import { useAppStore } from '@/store/appStore';
-
-// Initialize i18n (side effect import — must come before any useTranslation)
-import '@/services/i18n';
-
 SplashScreen.preventAutoHideAsync();
-
 export default function RootLayout() {
   const { isReady: isDatabaseReady, error } = useDatabase();
   const setDatabaseReady = useAppStore((s) => s.setDatabaseReady);
@@ -27,8 +22,8 @@ export default function RootLayout() {
   }, [isDatabaseReady, setDatabaseReady]);
 
   useEffect(() => {
-    if (isDatabaseReady) SplashScreen.hideAsync();
-  }, [isDatabaseReady]);
+    if (isDatabaseReady || error) SplashScreen.hideAsync();
+  }, [isDatabaseReady, error]);
 
   if (error) {
     return (
@@ -59,25 +54,25 @@ function AppContent() {
 
   const paperTheme = isDarkMode
     ? {
-        ...MD3DarkTheme,
-        colors: {
-          ...MD3DarkTheme.colors,
-          primary: colors.primary,
-          background: colors.background,
-          surface: colors.surface,
-          error: colors.error,
-        },
-      }
+      ...MD3DarkTheme,
+      colors: {
+        ...MD3DarkTheme.colors,
+        primary: colors.primary,
+        background: colors.background,
+        surface: colors.surface,
+        error: colors.error,
+      },
+    }
     : {
-        ...MD3LightTheme,
-        colors: {
-          ...MD3LightTheme.colors,
-          primary: colors.primary,
-          background: colors.background,
-          surface: colors.surface,
-          error: colors.error,
-        },
-      };
+      ...MD3LightTheme,
+      colors: {
+        ...MD3LightTheme.colors,
+        primary: colors.primary,
+        background: colors.background,
+        surface: colors.surface,
+        error: colors.error,
+      },
+    };
 
   return (
     <PaperProvider theme={paperTheme}>
@@ -88,7 +83,7 @@ function AppContent() {
           contentStyle: { backgroundColor: colors.background },
         }}
       >
-        <Stack.Screen name="tabs" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
     </PaperProvider>
   );

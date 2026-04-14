@@ -1,22 +1,24 @@
 
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  ActivityIndicator,
-  RefreshControl,
-  Image,
-} from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTranslation } from 'react-i18next';
-import { useRouter } from 'expo-router';
 import { useTheme } from '@/hooks/useTheme';
+import { fetchForecast, fetchWeather, getWeatherIconUrl } from '@/services/weatherApi';
 import { useAppStore } from '@/store/appStore';
-import { fetchWeather, fetchForecast, getWeatherIconUrl } from '@/services/weatherApi';
 import type { ForecastItem } from '@/types';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  ActivityIndicator,
+  Image,
+  Platform,
+  RefreshControl,
+  StatusBar as RNStatusBar,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 type LoadState = 'loading' | 'no_key' | 'no_city' | 'error' | 'ok';
 
@@ -335,7 +337,10 @@ function EmptyState({
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
+  screen: {
+    flex: 1,
+    paddingTop: Platform.OS === 'android' ? RNStatusBar.currentHeight : 44,
+  },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
   loadingText: { marginTop: 12, fontSize: 15 },
 
