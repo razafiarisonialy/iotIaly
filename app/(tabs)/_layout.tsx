@@ -1,11 +1,11 @@
 
-import React from 'react';
-import { Tabs } from 'expo-router';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTranslation } from 'react-i18next';
+import { themeConfig } from '@/constants/colors';
 import { useTheme } from '@/hooks/useTheme';
 import { useUnreadAlertCount } from '@/store/appStore';
-import { themeConfig } from '@/constants/colors';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Tabs } from 'expo-router';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function TabLayout() {
   const { colors } = useTheme();
@@ -22,9 +22,13 @@ export default function TabLayout() {
           backgroundColor: colors.tabBarBackground,
           borderTopColor: colors.tabBarBorder,
           borderTopWidth: 1,
-          height: 60,
+          height: 80,
           paddingBottom: 8,
           paddingTop: 4,
+          marginBottom: 8,
+          marginHorizontal: 8,
+          borderRadius: 16,
+          elevation: 8,
         },
         tabBarLabelStyle: {
           fontSize: 11,

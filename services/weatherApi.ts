@@ -1,20 +1,20 @@
 
-import Constants from 'expo-constants';
 import type {
-  WeatherData,
-  OpenWeatherMapResponse,
   ForecastItem,
   OpenWeatherMapForecastResponse,
+  OpenWeatherMapResponse,
+  WeatherData,
 } from '@/types';
 import {
+  DEFAULT_WEATHER_CITY,
   WEATHER_API_BASE_URL,
+  WEATHER_API_TIMEOUT_MS,
+  WEATHER_CACHE_DURATION_MS,
   WEATHER_FORECAST_URL,
   WEATHER_GEOCODING_URL,
   WEATHER_ICON_BASE_URL,
-  DEFAULT_WEATHER_CITY,
-  WEATHER_CACHE_DURATION_MS,
-  WEATHER_API_TIMEOUT_MS,
 } from '@/utils/constants';
+import Constants from 'expo-constants';
 
 export interface GeoCity {
   name: string;
@@ -193,7 +193,7 @@ export async function searchCities(query: string, limit = 5): Promise<GeoCity[]>
   try {
     const response = await fetch(url);
     if (!response.ok) return [];
-    const data = await response.json() as Array<{ name: string; country: string; state?: string }>;
+    const data = await response.json() as { name: string; country: string; state?: string }[];
     // deduplicate by "name, country"
     const seen = new Set<string>();
     return data.filter((item) => {

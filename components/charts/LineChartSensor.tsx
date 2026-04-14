@@ -1,12 +1,12 @@
 
-import React, { memo, useMemo } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
+import { themeConfig } from '@/constants/colors';
 import { useTheme } from '@/hooks/useTheme';
+import type { SensorReading, SensorType } from '@/types';
 import { SENSOR_COLORS, SENSOR_LABELS } from '@/utils/constants';
 import { formatChartTime } from '@/utils/helpers';
-import type { SensorReading, SensorType } from '@/types';
-import { themeConfig } from '@/constants/colors';
+import React, { memo, useMemo } from 'react';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
 
 interface LineChartSensorProps {
     sensorType: SensorType;
@@ -25,7 +25,7 @@ function LineChartSensorComponent({
   title,
   showAnomalies = true,
 }: LineChartSensorProps) {
-  const { colors, isDarkMode } = useTheme();
+  const { colors } = useTheme();
   const sensorColor = SENSOR_COLORS[sensorType];
 
   
@@ -111,7 +111,7 @@ function LineChartSensorComponent({
             },
           ],
         }}
-        width={SCREEN_WIDTH - 32}
+        width={SCREEN_WIDTH - 50}
         height={height}
         yAxisSuffix=""
         yAxisInterval={1}

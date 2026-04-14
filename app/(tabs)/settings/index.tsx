@@ -3,7 +3,7 @@ import { Header } from '@/components/layout/Header';
 import { useTheme } from '@/hooks/useTheme';
 import { APP_DESCRIPTION, APP_NAME, APP_VERSION } from '@/utils/constants';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { Href, useRouter } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -14,7 +14,7 @@ interface SettingsSection {
   color: string;
   title: string;
   description: string;
-  route: string;
+  route: Href;
 }
 
 export default function SettingsIndexScreen() {
@@ -29,7 +29,7 @@ export default function SettingsIndexScreen() {
       color: '#AF52DE',
       title: t('settings.appearance'),
       description: t('settings.appearanceDesc'),
-      route: '/tabs/settings/appearance',
+      route: '/(tabs)/settings/appearance',
     },
     {
       key: 'simulation',
@@ -37,7 +37,7 @@ export default function SettingsIndexScreen() {
       color: '#FF9500',
       title: t('settings.simulation'),
       description: t('settings.simulationDesc'),
-      route: '/tabs/settings/simulation',
+      route: '/(tabs)/settings/simulation',
     },
     {
       key: 'api',
@@ -45,7 +45,7 @@ export default function SettingsIndexScreen() {
       color: '#34C759',
       title: t('settings.api'),
       description: t('settings.apiDesc'),
-      route: '/tabs/settings/api',
+      route: '/(tabs)/settings/api',
     },
     {
       key: 'data',
@@ -53,7 +53,7 @@ export default function SettingsIndexScreen() {
       color: '#FF3B30',
       title: t('settings.data'),
       description: t('settings.dataDesc'),
-      route: '/tabs/settings/data',
+      route: '/(tabs)/settings/data',
     },
   ];
 
@@ -68,7 +68,7 @@ export default function SettingsIndexScreen() {
             <React.Fragment key={section.key}>
               <TouchableOpacity
                 style={styles.listItem}
-                onPress={() => router.push(section.route as any)}
+                onPress={() => router.push(section.route)}
                 activeOpacity={0.7}
               >
                 <View style={[styles.iconWrap, { backgroundColor: `${section.color}20` }]}>
@@ -91,7 +91,10 @@ export default function SettingsIndexScreen() {
           ))}
         </View>
 
-        {/* About section */}
+      </ScrollView>
+
+      {/* About footer */}
+      <View style={styles.footerPadding}>
         <Text style={[styles.sectionLabel, { color: colors.textTertiary }]}>
           {t('settings.about').toUpperCase()}
         </Text>
@@ -101,20 +104,8 @@ export default function SettingsIndexScreen() {
             Version {APP_VERSION}
           </Text>
           <Text style={[styles.aboutDesc, { color: colors.textTertiary }]}>{APP_DESCRIPTION}</Text>
-          <View style={[styles.divider, { backgroundColor: colors.border }]} />
-          <Text style={[styles.aboutCredit, { color: colors.textTertiary }]}>
-            {t('about.developedWith')}
-          </Text>
-          <Text style={[styles.aboutCredit, { color: colors.textTertiary }]}>
-            {t('about.ai')}
-          </Text>
-          <Text style={[styles.aboutCredit, { color: colors.textTertiary }]}>
-            {t('about.license')}
-          </Text>
         </View>
-
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -165,4 +156,5 @@ const styles = StyleSheet.create({
   divider: { height: 1, width: '80%', marginVertical: 12 },
   aboutCredit: { fontSize: 11, marginTop: 2 },
   bottomSpacer: { height: 40 },
+  footerPadding: { padding: 16 },
 });
