@@ -1,22 +1,22 @@
 
-import React, { memo, useMemo } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { LineChart } from 'react-native-chart-kit';
 import { useTheme } from '@/hooks/useTheme';
 import { useSensor } from '@/store/appStore';
-import { SENSOR_ICONS, SENSOR_LABELS, SENSOR_COLORS } from '@/utils/constants';
-import { STATUS_COLORS } from '@/utils/constants';
-import { formatSensorValue, getStatusLabel } from '@/utils/helpers';
+import { SENSOR_COLORS, SENSOR_ICONS, SENSOR_LABELS, STATUS_COLORS } from '@/utils/constants';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { memo, useMemo } from 'react';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
+
+import { themeConfig } from '@/constants/colors';
 import { getTrendDescription } from '@/services/aiEngine';
 import type { SensorType } from '@/types';
-import { themeConfig } from '@/constants/colors';
+import { formatSensorValue, getStatusLabel } from '@/utils/helpers';
 
 interface SensorCardProps {
     sensorType: SensorType;
@@ -127,8 +127,8 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
               labels: [],
               datasets: [{ data: sparklineData }],
             }}
-            width={CARD_WIDTH - 32}
-            height={40}
+            width={CARD_WIDTH - 20}
+            height={80}
             withDots={false}
             withInnerLines={false}
             withOuterLines={false}

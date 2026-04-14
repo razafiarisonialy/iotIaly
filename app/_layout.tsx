@@ -1,22 +1,18 @@
 
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
+import { themeConfig } from '@/constants/colors';
+import { useDatabase } from '@/hooks/useDatabase';
+import { useSensorData } from '@/hooks/useSensorData';
+import { useTheme } from '@/hooks/useTheme';
+import '@/services/i18n';
+import { useAppStore } from '@/store/appStore';
+import { SplashScreen, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import 'react-native-reanimated';
 
-import { themeConfig } from '@/constants/colors';
-import { useDatabase } from '@/hooks/useDatabase';
-import { useSensorData } from '@/hooks/useSensorData';
-import { useTheme } from '@/hooks/useTheme';
-import { useAppStore } from '@/store/appStore';
-
-import '@/services/i18n';
-
-SplashScreen.preventAutoHideAsync().catch(() => { });
-
+SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const { isReady: isDatabaseReady, error } = useDatabase();
   const setDatabaseReady = useAppStore((s) => s.setDatabaseReady);
@@ -26,14 +22,8 @@ export default function RootLayout() {
   }, [isDatabaseReady, setDatabaseReady]);
 
   useEffect(() => {
-    SplashScreen.hideAsync().catch(() => { });
-  }, []);
-
-  // Sécurité : force le masquage du splash après 10s max (ex: DB bloquée)
-  useEffect(() => {
-    const timeout = setTimeout(() => SplashScreen.hideAsync(), 10000);
-    return () => clearTimeout(timeout);
-  }, []);
+    if (isDatabaseReady || error) SplashScreen.hideAsync();
+  }, [isDatabaseReady, error]);
 
   if (error) {
     return (
@@ -93,7 +83,7 @@ function AppContent() {
           contentStyle: { backgroundColor: colors.background },
         }}
       >
-        <Stack.Screen name="tabs" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
     </PaperProvider>
   );
