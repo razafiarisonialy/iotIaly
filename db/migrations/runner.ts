@@ -1,4 +1,3 @@
-// db/migrations/runner.ts
 import type * as SQLite from 'expo-sqlite';
 import { MIGRATIONS } from './registry';
 

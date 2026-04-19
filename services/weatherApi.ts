@@ -1,4 +1,3 @@
-
 import type {
   ForecastItem,
   OpenWeatherMapForecastResponse,
@@ -27,7 +26,7 @@ interface WeatherCache {
   timestamp: number;
 }
 
-let weatherCache: WeatherCache | null = null;
+const weatherCacheMap: Record<string, WeatherCache> = {};
 
 function getApiKey(customKey?: string): string {
   if (customKey && customKey.length > 0) {
@@ -42,12 +41,14 @@ export async function fetchWeather(
   apiKey?: string,
   forceRefresh: boolean = false
 ): Promise<WeatherData | null> {
+  const cityKey = city.toLowerCase();
+  const cached = weatherCacheMap[cityKey];
   if (
     !forceRefresh &&
-    weatherCache &&
-    Date.now() - weatherCache.timestamp < WEATHER_CACHE_DURATION_MS
+    cached &&
+    Date.now() - cached.timestamp < WEATHER_CACHE_DURATION_MS
   ) {
-    return weatherCache.data;
+    return cached.data;
   }
 
   const key = getApiKey(apiKey);
@@ -91,7 +92,7 @@ export async function fetchWeather(
       timestamp: new Date().toISOString(),
     };
 
-    weatherCache = {
+    weatherCacheMap[cityKey] = {
       data: weatherData,
       timestamp: Date.now(),
     };
@@ -144,7 +145,9 @@ export function getWeatherIconUrl(iconCode: string): string {
 }
 
 export function clearWeatherCache(): void {
-  weatherCache = null;
+  for (const key in weatherCacheMap) {
+    delete weatherCacheMap[key];
+  }
 }
 
 export async function fetchForecast(
@@ -194,7 +197,7 @@ export async function searchCities(query: string, limit = 5): Promise<GeoCity[]>
     const response = await fetch(url);
     if (!response.ok) return [];
     const data = await response.json() as { name: string; country: string; state?: string }[];
-    // deduplicate by "name, country"
+    
     const seen = new Set<string>();
     return data.filter((item) => {
       const key = `${item.name},${item.country}`;

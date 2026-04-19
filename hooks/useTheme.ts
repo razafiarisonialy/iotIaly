@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { useAppStore } from '@/store/appStore';
@@ -19,7 +18,6 @@ export function useTheme(): UseThemeReturn {
   const setDarkMode = useAppStore((s) => s.setDarkMode);
   const isDatabaseReady = useAppStore((s) => s.isDatabaseReady);
 
-  
   useEffect(() => {
     if (!isDatabaseReady) return;
 

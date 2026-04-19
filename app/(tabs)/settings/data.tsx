@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import {
   View,
@@ -95,7 +94,7 @@ export default function DataSettingsScreen() {
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 
-        {/* DB info */}
+        {}
         <Text style={[styles.groupLabel, { color: colors.textTertiary }]}>
           {t('dataSettings.dbSize').toUpperCase()}
         </Text>
@@ -108,7 +107,7 @@ export default function DataSettingsScreen() {
           </View>
         </View>
 
-        {/* Export */}
+        {}
         <Text style={[styles.groupLabel, { color: colors.textTertiary }]}>
           {t('common.export').toUpperCase()}
         </Text>
@@ -127,7 +126,7 @@ export default function DataSettingsScreen() {
           )}
         </TouchableOpacity>
 
-        {/* Danger zone */}
+        {}
         <Text style={[styles.groupLabel, { color: colors.error }]}>
           ⚠ {t('dataSettings.purge').toUpperCase()}
         </Text>

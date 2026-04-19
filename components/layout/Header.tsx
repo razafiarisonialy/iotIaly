@@ -1,4 +1,3 @@
-
 import React, { memo, useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,7 +19,6 @@ function HeaderComponent({ title, showStatus = true }: HeaderProps) {
   const systemStatus = useSystemStatus();
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);

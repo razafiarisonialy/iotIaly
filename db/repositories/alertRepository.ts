@@ -1,4 +1,3 @@
-// db/repositories/alertRepository.ts
 import { getDatabase } from '../index';
 import type { Alert, AlertRow, SensorType, SeverityLevel } from '@/types';
 import { mapRowToAlert, getCurrentTimestamp } from '@/utils/helpers';

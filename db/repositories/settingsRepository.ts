@@ -1,4 +1,3 @@
-// db/repositories/settingsRepository.ts
 import { getDatabase } from '../index';
 import type { Setting } from '@/types';
 

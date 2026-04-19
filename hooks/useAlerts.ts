@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { useAppStore } from '@/store/appStore';
 import {
@@ -54,7 +53,6 @@ export function useAlerts(autoLoad: boolean = true): UseAlertsReturn {
     }
   }, [isDatabaseReady, storeSetAlerts]);
 
-  
   useEffect(() => {
     if (autoLoad && isDatabaseReady) {
       refresh();
@@ -91,7 +89,6 @@ export function useAlerts(autoLoad: boolean = true): UseAlertsReturn {
     }
   }, [storeClear]);
 
-  
   let filteredAlerts = storeAlerts;
 
   if (filter === 'unacknowledged') {

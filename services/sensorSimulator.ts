@@ -1,4 +1,3 @@
-
 import type { SensorType, SensorUnit } from '@/types';
 import {
   SENSOR_UNIT_MAP,
@@ -13,10 +12,6 @@ export interface SimulatedReading {
   isAnomaly: boolean;
 }
 
-
-
-
-
 const previousValues: Record<SensorType, number> = {
   temperature: 22,
   humidity: 55,
@@ -25,22 +20,15 @@ const previousValues: Record<SensorType, number> = {
   air_quality: 50,
 };
 
-
-
-
-
 function simulateTemperature(injectAnomaly: boolean): number {
   const now = new Date();
   const hour = now.getHours() + now.getMinutes() / 60;
 
-  
   const baseTemp = 24 + 6 * Math.sin(((hour - 8) / 24) * 2 * Math.PI);
 
-  
   const noise = gaussianRandom(0, 0.5);
   let value = baseTemp + noise;
 
-  
   value = 0.7 * value + 0.3 * previousValues.temperature;
 
   if (injectAnomaly) {
@@ -54,10 +42,6 @@ function simulateTemperature(injectAnomaly: boolean): number {
   return value;
 }
 
-
-
-
-
 function simulateHumidity(
   currentTemp: number,
   injectAnomaly: boolean
@@ -65,11 +49,9 @@ function simulateHumidity(
   
   const baseHumidity = 90 - (currentTemp - 15) * 2.5;
 
-  
   const noise = gaussianRandom(0, 2);
   let value = baseHumidity + noise;
 
-  
   value = 0.7 * value + 0.3 * previousValues.humidity;
 
   if (injectAnomaly) {
@@ -81,10 +63,6 @@ function simulateHumidity(
   previousValues.humidity = value;
   return value;
 }
-
-
-
-
 
 function simulateMotion(injectAnomaly: boolean): number {
   const hour = new Date().getHours();
@@ -106,39 +84,29 @@ function simulateMotion(injectAnomaly: boolean): number {
   return Math.random() < probability ? 1 : 0;
 }
 
-
-
-
-
 function simulateEnergy(injectAnomaly: boolean): number {
   const now = new Date();
   const hour = now.getHours() + now.getMinutes() / 60;
 
-  
   let baseEnergy = 0.8; 
 
-  
   if (hour >= 6 && hour <= 10) {
     const peakFactor = 1 - Math.abs(hour - 8) / 2;
     baseEnergy += 2.5 * Math.max(0, peakFactor);
   }
 
-  
   if (hour >= 17 && hour <= 22) {
     const peakFactor = 1 - Math.abs(hour - 19.5) / 2.5;
     baseEnergy += 3.0 * Math.max(0, peakFactor);
   }
 
-  
   if (hour >= 23 || hour <= 5) {
     baseEnergy *= 0.4;
   }
 
-  
   const noise = gaussianRandom(0, 0.2);
   let value = baseEnergy + noise;
 
-  
   value = 0.6 * value + 0.4 * previousValues.energy;
 
   if (injectAnomaly) {
@@ -151,20 +119,14 @@ function simulateEnergy(injectAnomaly: boolean): number {
   return value;
 }
 
-
-
-
-
 function simulateAirQuality(injectAnomaly: boolean): number {
   const now = new Date();
   const hour = now.getHours() + now.getMinutes() / 60;
   const dayOfWeek = now.getDay(); 
   const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
 
-  
   let baseAQI = isWeekend ? 35 : 55;
 
-  
   if (hour >= 7 && hour <= 10) {
     baseAQI += 30 * Math.max(0, 1 - Math.abs(hour - 8.5) / 1.5);
   }
@@ -172,16 +134,13 @@ function simulateAirQuality(injectAnomaly: boolean): number {
     baseAQI += 25 * Math.max(0, 1 - Math.abs(hour - 18) / 2);
   }
 
-  
   if (hour >= 22 || hour <= 5) {
     baseAQI *= 0.6;
   }
 
-  
   const noise = gaussianRandom(0, 5);
   let value = baseAQI + noise;
 
-  
   value = 0.7 * value + 0.3 * previousValues.air_quality;
 
   if (injectAnomaly) {
@@ -193,10 +152,6 @@ function simulateAirQuality(injectAnomaly: boolean): number {
   previousValues.air_quality = value;
   return value;
 }
-
-
-
-
 
 export function generateReading(sensorType: SensorType): SimulatedReading {
   const injectAnomaly = Math.random() < ANOMALY_INJECTION_RATE;

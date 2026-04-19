@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useCallback } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { generateAllReadings } from '@/services/sensorSimulator';
@@ -36,13 +35,11 @@ export function useSensorData(enabled: boolean): void {
       for (const simReading of readings) {
         const { sensorType, value, unit, isAnomaly } = simReading;
 
-        
         const sensorState = useAppStore.getState().sensors[sensorType];
         const thresholdConfig = thresholds.find(
           (t) => t.sensorType === sensorType
         );
 
-        
         const analysis = analyzeReading(
           sensorType,
           value,
@@ -51,10 +48,8 @@ export function useSensorData(enabled: boolean): void {
           thresholdConfig
         );
 
-        
         const detectedAnomaly = isAnomaly || analysis.anomaly.isAnomaly;
 
-        
         const readingId = await insertReading(
           sensorType,
           value,
@@ -62,7 +57,6 @@ export function useSensorData(enabled: boolean): void {
           detectedAnomaly
         );
 
-        
         const fullReading: SensorReading = {
           id: readingId,
           sensorType,
@@ -72,11 +66,9 @@ export function useSensorData(enabled: boolean): void {
           isAnomaly: detectedAnomaly,
         };
 
-        
         updateSensorValue(sensorType, value, detectedAnomaly, fullReading);
         setSensorPrediction(sensorType, analysis.prediction);
 
-        
         if (alertsEnabled && analysis.rules.length > 0) {
           for (const rule of analysis.rules) {
             if (rule.triggered) {
@@ -97,7 +89,6 @@ export function useSensorData(enabled: boolean): void {
 
               addAlert(newAlert);
 
-              
               if (rule.severity === 'critical') {
                 Haptics.notificationAsync(
                   Haptics.NotificationFeedbackType.Error
@@ -113,7 +104,6 @@ export function useSensorData(enabled: boolean): void {
           }
         }
 
-        
         if (detectedAnomaly && alertsEnabled) {
           const anomalyMessage = `Anomalie détectée sur ${sensorType}: valeur ${value} (Z-Score: ${analysis.anomaly.zScore})`;
           const alertId = await dbInsertAlert(
@@ -145,7 +135,6 @@ export function useSensorData(enabled: boolean): void {
     addAlert,
   ]);
 
-  
   useEffect(() => {
     if (!enabled || !simulationRunning) {
       if (intervalRef.current) {
@@ -157,10 +146,8 @@ export function useSensorData(enabled: boolean): void {
 
     const intervalMs = SIMULATION_INTERVALS[simulationSpeed];
 
-    
     tick();
 
-    
     intervalRef.current = setInterval(tick, intervalMs);
 
     return () => {

@@ -95,8 +95,8 @@
     "appearanceDesc": "Mode sombre, préférences de notifications",
     "simulation": "Simulation et Seuils",
     "simulationDesc": "Fréquence et limites des capteurs",
-    "api": "API Externe",
-    "apiDesc": "Configuration OpenWeatherMap",
+    "api": "Météo et Ville",
+    "apiDesc": "Configuration de la météo",
     "data": "Données",
     "dataDesc": "Exporter et gérer la base de données",
     "about": "À propos"

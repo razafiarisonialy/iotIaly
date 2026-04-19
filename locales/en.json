@@ -95,8 +95,8 @@
     "appearanceDesc": "Dark mode, notification preferences",
     "simulation": "Simulation & Thresholds",
     "simulationDesc": "Frequency and sensor limits",
-    "api": "External API",
-    "apiDesc": "OpenWeatherMap configuration",
+    "api": "Weather & City",
+    "apiDesc": "Weather configuration",
     "data": "Data",
     "dataDesc": "Export and manage database",
     "about": "About"
