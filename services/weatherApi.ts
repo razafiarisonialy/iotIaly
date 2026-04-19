@@ -13,6 +13,7 @@ import {
   WEATHER_GEOCODING_URL,
   WEATHER_ICON_BASE_URL,
 } from '@/utils/constants';
+import { showErrorToast } from '@/services/toastService';
 import Constants from 'expo-constants';
 
 export interface GeoCity {
@@ -53,7 +54,7 @@ export async function fetchWeather(
 
   const key = getApiKey(apiKey);
   if (!key) {
-    console.warn('Weather API key not configured in .env (WEATHER_API_KEY).');
+    showErrorToast('errors.weatherApiKeyMissing');
     return null;
   }
 
@@ -68,11 +69,11 @@ export async function fetchWeather(
 
     if (!response.ok) {
       if (response.status === 401) {
-        console.error('Weather API: Invalid API key');
+        showErrorToast('errors.weatherApiInvalidKey');
       } else if (response.status === 429) {
-        console.error('Weather API: Rate limit exceeded');
+        showErrorToast('errors.weatherApiRateLimit');
       } else {
-        console.error(`Weather API: HTTP ${response.status}`);
+        showErrorToast('errors.weatherApiHttpError', { status: response.status.toString() });
       }
       return null;
     }
@@ -100,9 +101,9 @@ export async function fetchWeather(
     return weatherData;
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {
-      console.error('Weather API: Request timed out');
+      showErrorToast('errors.weatherApiTimeout');
     } else {
-      console.error('Weather API error:', error);
+      showErrorToast('errors.weatherApiError');
     }
     return null;
   }

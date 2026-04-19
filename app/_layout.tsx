@@ -4,6 +4,7 @@ import { useDatabase } from '@/hooks/useDatabase';
 import { useSensorData } from '@/hooks/useSensorData';
 import { useTheme } from '@/hooks/useTheme';
 import '@/services/i18n';
+
 import { useAppStore } from '@/store/appStore';
 import { SplashScreen, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -51,6 +52,7 @@ function AppContent() {
   const isDatabaseReady = useAppStore((s) => s.isDatabaseReady);
 
   useSensorData(isDatabaseReady);
+
 
   const paperTheme = isDarkMode
     ? {

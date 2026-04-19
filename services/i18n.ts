@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Localization from 'expo-localization';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { Alert } from 'react-native';
 
 import en from '../locales/en.json';
 import es from '../locales/es.json';
@@ -54,8 +55,8 @@ i18n
     },
     compatibilityJSON: 'v4',
   })
-  .catch((err) => {
-    console.error('i18n init failed:', err);
+  .catch(() => {
+    Alert.alert('Error', 'i18n initialization failed');
   });
 
 export default i18n;

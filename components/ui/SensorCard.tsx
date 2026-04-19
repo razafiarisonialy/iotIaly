@@ -18,8 +18,8 @@ import type { SensorType } from '@/types';
 import { formatSensorValue, getStatusLabel } from '@/utils/helpers';
 
 interface SensorCardProps {
-    sensorType: SensorType;
-    onPress?: (sensorType: SensorType) => void;
+  sensorType: SensorType;
+  onPress?: (sensorType: SensorType) => void;
 }
 
 const CARD_WIDTH = (Dimensions.get('window').width - 48) / 2;
@@ -64,7 +64,7 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
       accessibilityLabel={`${label}: ${displayValue}${unitDisplay}`}
       accessibilityRole="button"
     >
-      {}
+      { }
       <View style={styles.headerRow}>
         <View
           style={[
@@ -81,7 +81,7 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
         <View style={[styles.statusDot, { backgroundColor: statusColor }]} />
       </View>
 
-      {}
+      { }
       <Text
         style={[styles.label, { color: colors.textSecondary }]}
         numberOfLines={1}
@@ -89,7 +89,7 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
         {label}
       </Text>
 
-      {}
+      { }
       <View style={styles.valueRow}>
         <Text style={[styles.value, { color: colors.text }]}>
           {displayValue}
@@ -103,7 +103,7 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
         )}
       </View>
 
-      {}
+      { }
       <Text
         style={[styles.statusText, { color: statusColor }]}
         numberOfLines={1}
@@ -117,7 +117,7 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
         {trendLabel}
       </Text>
 
-      {}
+      { }
       {sparklineData.length > 2 && sensorType !== 'motion' && (
         <View style={styles.sparklineContainer}>
           <LineChart
@@ -133,10 +133,16 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
             withHorizontalLabels={false}
             withVerticalLabels={false}
             chartConfig={{
-              backgroundGradientFrom: 'transparent',
-              backgroundGradientTo: 'transparent',
+              backgroundGradientFrom: colors.cardBackground,
+              backgroundGradientTo: colors.cardBackground,
+              backgroundGradientFromOpacity: 0,
+              backgroundGradientToOpacity: 0,
               color: () => sensorColor,
-              strokeWidth: 2,
+              fillShadowGradientFrom: sensorColor,
+              fillShadowGradientFromOpacity: 0.35,
+              fillShadowGradientTo: sensorColor,
+              fillShadowGradientToOpacity: 0.05,
+              strokeWidth: 2.5,
               propsForBackgroundLines: { stroke: 'transparent' },
             }}
             bezier

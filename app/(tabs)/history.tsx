@@ -24,6 +24,7 @@ import { SensorSelector } from '@/components/history/SensorSelector';
 import { PeriodSelector } from '@/components/history/PeriodSelector';
 import { StatsContainer } from '@/components/history/StatsContainer';
 import { ReadingRow } from '@/components/history/ReadingRow';
+import { showErrorToast } from '@/services/toastService';
 
 export default function HistoryScreen() {
   const { t } = useTranslation();
@@ -45,8 +46,8 @@ export default function HistoryScreen() {
         selectedSensor
       );
       setReadings(data);
-    } catch (error) {
-      console.error('Failed to load readings:', error);
+    } catch {
+      showErrorToast('errors.loadReadingsFailed');
     } finally {
       setIsLoading(false);
     }
@@ -80,8 +81,8 @@ export default function HistoryScreen() {
           dialogTitle: t('history.exportCsv'),
         });
       }
-    } catch (error) {
-      console.error('Export failed:', error);
+    } catch {
+      showErrorToast('errors.exportFailed');
       RNAlert.alert(t('common.error'), t('dataSettings.exportError'));
     }
   }, [readings, t, selectedSensor, selectedPeriod]);
