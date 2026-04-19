@@ -1,4 +1,3 @@
-// db/utils.ts
 import { getDatabase } from './index';
 import { purgeAllReadings } from './repositories/sensorRepository';
 import { purgeAllAlerts } from './repositories/alertRepository';

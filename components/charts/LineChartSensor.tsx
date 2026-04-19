@@ -1,4 +1,3 @@
-
 import { themeConfig } from '@/constants/colors';
 import { useTheme } from '@/hooks/useTheme';
 import type { SensorReading, SensorType } from '@/types';
@@ -28,7 +27,6 @@ function LineChartSensorComponent({
   const { colors } = useTheme();
   const sensorColor = SENSOR_COLORS[sensorType];
 
-  
   const chartData = useMemo(() => {
     const sorted = [...readings]
       .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
@@ -42,13 +40,11 @@ function LineChartSensorComponent({
       };
     }
 
-    // Show labels for every 5th point to avoid crowding
     const labels = sorted.map((r, i) =>
       i % 5 === 0 ? formatChartTime(r.timestamp) : ''
     );
     const values = sorted.map((r) => r.value);
 
-    // Find anomaly indices for dot highlighting
     const anomalyIndices = showAnomalies
       ? sorted
           .map((r, i) => (r.isAnomaly ? i : -1))
@@ -68,7 +64,6 @@ function LineChartSensorComponent({
     );
   }
 
-  // Build decorator function for anomaly dots
   const renderDotContent = (config: {
     x: number;
     y: number;

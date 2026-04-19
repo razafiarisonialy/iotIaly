@@ -1,0 +1,9 @@
+export const ANOMALY_INJECTION_RATE = 0.05;
+
+export const ANOMALY_WINDOW_SIZE = 30;
+
+export const ANOMALY_Z_THRESHOLD = 2.5;
+
+export const PREDICTION_WINDOW_SIZE = 20;
+
+export const PREDICTION_MINUTES_AHEAD = 10;

@@ -1,4 +1,3 @@
-
 import React, { memo, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Animated, {
@@ -35,7 +34,6 @@ function StatusIndicatorComponent({
   const pulseScale = useSharedValue(1);
   const pulseOpacity = useSharedValue(0.6);
 
-  
   useEffect(() => {
     if (status === 'normal') {
       pulseScale.value = 1;

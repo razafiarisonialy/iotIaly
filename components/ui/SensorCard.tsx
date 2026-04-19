@@ -1,4 +1,3 @@
-
 import { useTheme } from '@/hooks/useTheme';
 import { useSensor } from '@/store/appStore';
 import { SENSOR_COLORS, SENSOR_ICONS, SENSOR_LABELS, STATUS_COLORS } from '@/utils/constants';
@@ -41,7 +40,6 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
     ? getTrendDescription(sensor.trend, sensor.prediction.slope)
     : '→ Stable';
 
-  
   const sparklineData = useMemo(() => {
     const values = sensor.recentValues.slice(-15);
     if (values.length < 2) return [0, 0];
@@ -66,7 +64,7 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
       accessibilityLabel={`${label}: ${displayValue}${unitDisplay}`}
       accessibilityRole="button"
     >
-      {/* Header Row: Icon + Status Dot */}
+      {}
       <View style={styles.headerRow}>
         <View
           style={[
@@ -83,7 +81,7 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
         <View style={[styles.statusDot, { backgroundColor: statusColor }]} />
       </View>
 
-      {/* Sensor Label */}
+      {}
       <Text
         style={[styles.label, { color: colors.textSecondary }]}
         numberOfLines={1}
@@ -91,7 +89,7 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
         {label}
       </Text>
 
-      {/* Value */}
+      {}
       <View style={styles.valueRow}>
         <Text style={[styles.value, { color: colors.text }]}>
           {displayValue}
@@ -105,7 +103,7 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
         )}
       </View>
 
-      {/* Status & Trend */}
+      {}
       <Text
         style={[styles.statusText, { color: statusColor }]}
         numberOfLines={1}
@@ -119,7 +117,7 @@ function SensorCardComponent({ sensorType, onPress }: SensorCardProps) {
         {trendLabel}
       </Text>
 
-      {/* Sparkline */}
+      {}
       {sparklineData.length > 2 && sensorType !== 'motion' && (
         <View style={styles.sparklineContainer}>
           <LineChart
