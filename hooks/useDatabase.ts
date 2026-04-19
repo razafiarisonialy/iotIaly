@@ -1,4 +1,5 @@
 import { initializeDatabase } from '@/services/database';
+import { showErrorToast } from '@/services/toastService';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseDatabaseState {
@@ -21,7 +22,7 @@ export function useDatabase(): UseDatabaseState {
       await initializeDatabase();
       if (mountedRef.current) setIsReady(true);
     } catch (initError) {
-      console.error('Database initialization failed:', initError);
+      showErrorToast('errors.databaseInitFailed');
       if (mountedRef.current) {
         setError(
           initError instanceof Error

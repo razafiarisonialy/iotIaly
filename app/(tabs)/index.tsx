@@ -6,14 +6,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
-  Platform,
   RefreshControl,
-  StatusBar as RNStatusBar,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/dashboard/EmptyState';
 import { MainWeatherCard } from '@/components/dashboard/MainWeatherCard';
@@ -26,6 +25,7 @@ export default function DashboardScreen() {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const activeWeatherCity = useAppStore((s) => s.activeWeatherCity);
   const weatherCities = useAppStore((s) => s.weatherCities);
@@ -128,7 +128,7 @@ export default function DashboardScreen() {
   }
 
   return (
-    <View style={[styles.screen, { backgroundColor: colors.background }]}>
+    <View style={[styles.screen, { backgroundColor: colors.background, paddingTop: insets.top }]}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -167,9 +167,9 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    paddingTop: Platform.OS === 'android' ? RNStatusBar.currentHeight : 44,
   },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
   loadingText: { marginTop: 12, fontSize: 15 },
   bottomSpacer: { height: 24 },
 });
+

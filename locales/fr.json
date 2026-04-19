@@ -172,5 +172,27 @@
       "warning": "Avertissement",
       "critical": "Critique"
     }
+  },
+  "errors": {
+    "notificationPermissionDenied": "Les notifications ne sont pas autorisées sur cet appareil.",
+    "notificationNotSupported": "Les notifications ne sont pas disponibles dans cet environnement.",
+    "notificationFailed": "Impossible d'envoyer la notification.",
+    "sensorSimulationError": "Erreur lors de la simulation des capteurs.",
+    "loadAlertsFailed": "Impossible de charger les alertes.",
+    "acknowledgeAlertFailed": "Impossible d'acquitter l'alerte.",
+    "acknowledgeAllFailed": "Impossible d'acquitter toutes les alertes.",
+    "clearAlertsFailed": "Impossible de supprimer les alertes.",
+    "loadThemeFailed": "Impossible de charger le thème.",
+    "saveThemeFailed": "Impossible de sauvegarder le thème.",
+    "databaseInitFailed": "Impossible d'initialiser la base de données.",
+    "loadReadingsFailed": "Impossible de charger les mesures.",
+    "exportFailed": "L'export a échoué.",
+    "weatherApiKeyMissing": "Clé API météo non configurée dans le fichier .env.",
+    "weatherApiInvalidKey": "Clé API météo invalide.",
+    "weatherApiRateLimit": "Limite de requêtes météo atteinte.",
+    "weatherApiHttpError": "Erreur serveur météo (HTTP {{status}}).",
+    "weatherApiTimeout": "La requête météo a expiré.",
+    "weatherApiError": "Erreur lors de la récupération météo.",
+    "i18nInitFailed": "Impossible d'initialiser les traductions."
   }
 }

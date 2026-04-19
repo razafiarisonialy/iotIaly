@@ -172,5 +172,27 @@
       "warning": "Warning",
       "critical": "Critical"
     }
+  },
+  "errors": {
+    "notificationPermissionDenied": "Notifications are not allowed on this device.",
+    "notificationNotSupported": "Notifications are not available in this environment.",
+    "notificationFailed": "Unable to send the notification.",
+    "sensorSimulationError": "Error during sensor simulation.",
+    "loadAlertsFailed": "Unable to load alerts.",
+    "acknowledgeAlertFailed": "Unable to acknowledge the alert.",
+    "acknowledgeAllFailed": "Unable to acknowledge all alerts.",
+    "clearAlertsFailed": "Unable to delete alerts.",
+    "loadThemeFailed": "Unable to load theme.",
+    "saveThemeFailed": "Unable to save theme.",
+    "databaseInitFailed": "Unable to initialize the database.",
+    "loadReadingsFailed": "Unable to load readings.",
+    "exportFailed": "Export failed.",
+    "weatherApiKeyMissing": "Weather API key not configured in .env file.",
+    "weatherApiInvalidKey": "Invalid weather API key.",
+    "weatherApiRateLimit": "Weather API rate limit reached.",
+    "weatherApiHttpError": "Weather server error (HTTP {{status}}).",
+    "weatherApiTimeout": "Weather request timed out.",
+    "weatherApiError": "Error fetching weather data.",
+    "i18nInitFailed": "Unable to initialize translations."
   }
 }

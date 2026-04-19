@@ -172,5 +172,27 @@
       "warning": "Advertencia",
       "critical": "Crítico"
     }
+  },
+  "errors": {
+    "notificationPermissionDenied": "Las notificaciones no están permitidas en este dispositivo.",
+    "notificationNotSupported": "Las notificaciones no están disponibles en este entorno.",
+    "notificationFailed": "No se pudo enviar la notificación.",
+    "sensorSimulationError": "Error durante la simulación de sensores.",
+    "loadAlertsFailed": "No se pudieron cargar las alertas.",
+    "acknowledgeAlertFailed": "No se pudo reconocer la alerta.",
+    "acknowledgeAllFailed": "No se pudieron reconocer todas las alertas.",
+    "clearAlertsFailed": "No se pudieron eliminar las alertas.",
+    "loadThemeFailed": "No se pudo cargar el tema.",
+    "saveThemeFailed": "No se pudo guardar el tema.",
+    "databaseInitFailed": "No se pudo inicializar la base de datos.",
+    "loadReadingsFailed": "No se pudieron cargar las lecturas.",
+    "exportFailed": "La exportación falló.",
+    "weatherApiKeyMissing": "Clave API del clima no configurada en el archivo .env.",
+    "weatherApiInvalidKey": "Clave API del clima inválida.",
+    "weatherApiRateLimit": "Límite de solicitudes del clima alcanzado.",
+    "weatherApiHttpError": "Error del servidor del clima (HTTP {{status}}).",
+    "weatherApiTimeout": "La solicitud del clima expiró.",
+    "weatherApiError": "Error al obtener datos del clima.",
+    "i18nInitFailed": "No se pudieron inicializar las traducciones."
   }
 }
