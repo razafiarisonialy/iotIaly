@@ -1,0 +1,11 @@
+{
+  "title": "Appearance & Notifications",
+  "darkMode": "Dark mode",
+  "notifications": "Notifications",
+  "alertsEnabled": "Alerts enabled",
+  "language": "Language",
+  "selectLanguage": "Select language",
+  "english": "English",
+  "french": "French",
+  "spanish": "Spanish"
+}

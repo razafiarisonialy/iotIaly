@@ -1,0 +1,13 @@
+{
+  "title": "Data",
+  "dbSize": "Database size",
+  "exportAll": "Export all data",
+  "purge": "Purge history",
+  "purgeTitle": "Purge all data",
+  "purgeMsg": "This will delete all readings and alerts. Settings will be kept.\n\nThis action is irreversible.",
+  "purgeBtn": "Delete all",
+  "exportError": "Export failed.",
+  "purgeError": "Purge failed.",
+  "purgeSuccess": "{{readings}} readings and {{alerts}} alerts deleted.",
+  "deleted": "Data deleted"
+}

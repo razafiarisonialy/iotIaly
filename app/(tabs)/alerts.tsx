@@ -1,23 +1,24 @@
-import React, { useCallback } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Alert as RNAlert,
-} from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTranslation } from 'react-i18next';
 import { Header } from '@/components/layout/Header';
 import { AlertBanner } from '@/components/ui/AlertBanner';
-import { useTheme } from '@/hooks/useTheme';
-import { useAlerts } from '@/hooks/useAlerts';
-import type { Alert, SeverityLevel } from '@/types';
 import type { AlertFilter } from '@/hooks/useAlerts';
+import { useAlerts } from '@/hooks/useAlerts';
+import { useTheme } from '@/hooks/useTheme';
+import type { Alert, SeverityLevel } from '@/types';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  FlatList,
+  Alert as RNAlert,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
+import { ActionRow } from '@/components/alerts/ActionRow';
 import { FilterTabs } from '@/components/alerts/FilterTabs';
 import { SeverityFilter } from '@/components/alerts/SeverityFilter';
-import { ActionRow } from '@/components/alerts/ActionRow';
+import { MAX_ALERTS_IN_STORE } from '@/store/slices/alertSlice';
 
 export default function AlertsScreen() {
   const { t } = useTranslation();
@@ -117,7 +118,11 @@ export default function AlertsScreen() {
                   color={colors.error}
                 />
                 <Text style={[styles.unreadText, { color: colors.error }]}>
-                  {t('alerts.unreadCount', { count: unreadCount })}
+                  {
+                    unreadCount >= MAX_ALERTS_IN_STORE 
+                      ? `+${t('alerts.unreadCount', { count: 99 })}`
+                      : t('alerts.unreadCount', { count: unreadCount })
+                  }
                 </Text>
               </View>
             )}

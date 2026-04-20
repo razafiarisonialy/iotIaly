@@ -1,0 +1,18 @@
+{
+  "loading": "Chargement...",
+  "error": "Erreur",
+  "cancel": "Annuler",
+  "save": "Sauvegarder",
+  "back": "Retour",
+  "refresh": "Rafraîchir",
+  "export": "Exporter",
+  "delete": "Supprimer",
+  "confirm": "Confirmer",
+  "ok": "OK",
+  "yes": "Oui",
+  "no": "Non",
+  "add": "Ajouter",
+  "remove": "Retirer",
+  "edit": "Modifier",
+  "noData": "Aucune donnée disponible"
+}

@@ -2,6 +2,7 @@
 import { themeConfig } from '@/constants/colors';
 import { useTheme } from '@/hooks/useTheme';
 import { useUnreadAlertCount } from '@/store/appStore';
+import { MAX_ALERTS_IN_STORE } from '@/store/slices/alertSlice';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
@@ -67,7 +68,7 @@ export default function TabLayout() {
         name="alerts"
         options={{
           title: t('tabs.alerts'),
-          tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
+          tabBarBadge: unreadCount > 0 ? (unreadCount >= MAX_ALERTS_IN_STORE ? '+99' : unreadCount) : undefined,
           tabBarBadgeStyle: {
             backgroundColor: colors.error,
             color: themeConfig.colors.white,

@@ -1,22 +1,25 @@
-import type { StoreSlice } from '../types';
 import type { Alert } from '@/types';
+import type { StoreSlice } from '../types';
 
 export interface AlertSlice {
   alerts: Alert[];
   unreadAlertCount: number;
+  dataPurgedAt: number;
 
   addAlert: (alert: Alert) => void;
   acknowledgeAlert: (alertId: number) => void;
   acknowledgeAllAlerts: () => void;
   clearAlerts: () => void;
   setAlerts: (alerts: Alert[]) => void;
+  recordPurge: () => void;
 }
 
-const MAX_ALERTS_IN_STORE = 100;
+export const MAX_ALERTS_IN_STORE = 100;
 
 export const createAlertSlice: StoreSlice<AlertSlice> = (set, get) => ({
   alerts: [],
   unreadAlertCount: 0,
+  dataPurgedAt: 0,
 
   addAlert: (alert) => {
     set((state: any) => {
@@ -56,5 +59,9 @@ export const createAlertSlice: StoreSlice<AlertSlice> = (set, get) => ({
   setAlerts: (alerts) => {
     const unreadCount = alerts.filter((a: Alert) => !a.acknowledged).length;
     set({ alerts, unreadAlertCount: unreadCount });
+  },
+
+  recordPurge: () => {
+    set((state: any) => ({ dataPurgedAt: state.dataPurgedAt + 1 }));
   },
 });

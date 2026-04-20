@@ -1,0 +1,7 @@
+{
+  "status": {
+    "normal": "Système Normal",
+    "warning": "Avertissement",
+    "critical": "Critique"
+  }
+}

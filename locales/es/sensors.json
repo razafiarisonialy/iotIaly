@@ -1,0 +1,7 @@
+{
+  "temperature": "Temperatura",
+  "humidity": "Humedad",
+  "motion": "Movimiento",
+  "energy": "Energía",
+  "air_quality": "Calidad del Aire"
+}

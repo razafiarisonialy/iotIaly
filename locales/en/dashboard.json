@@ -1,0 +1,19 @@
+{
+  "title": "Weather Dashboard",
+  "noApiKey": "No API key configured.\nGo to Settings > External API to set up OpenWeatherMap.",
+  "noConnection": "Unable to connect to weather service.\nCheck your internet connection.",
+  "errorLoading": "Failed to load weather data.",
+  "lastUpdated": "Updated",
+  "feelsLike": "Feels like",
+  "humidity": "Humidity",
+  "wind": "Wind",
+  "pressure": "Pressure",
+  "hourlyForecast": "Hourly Forecast",
+  "currentWeather": "Current Weather",
+  "city": "City",
+  "country": "Country",
+  "configureApi": "Configure API",
+  "retry": "Retry",
+  "noCity": "No city configured",
+  "switchCity": "Switch city"
+}
