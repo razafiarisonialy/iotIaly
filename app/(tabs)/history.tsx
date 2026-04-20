@@ -20,6 +20,7 @@ import {
   View,
 } from 'react-native';
 
+import { useAppStore } from '@/store/appStore';
 import { SensorSelector } from '@/components/history/SensorSelector';
 import { PeriodSelector } from '@/components/history/PeriodSelector';
 import { StatsContainer } from '@/components/history/StatsContainer';
@@ -34,6 +35,8 @@ export default function HistoryScreen() {
   const [readings, setReadings] = useState<SensorReading[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSensorPicker, setShowSensorPicker] = useState(false);
+  const dataPurgedAt = useAppStore((s) => s.dataPurgedAt);
+  const simulationRunning = useAppStore((s) => s.simulationRunning);
 
   const loadReadings = useCallback(async () => {
     setIsLoading(true);
@@ -55,7 +58,13 @@ export default function HistoryScreen() {
 
   useEffect(() => {
     loadReadings();
-  }, [loadReadings]);
+  }, [loadReadings, dataPurgedAt]);
+
+  useEffect(() => {
+    if (!simulationRunning) return;
+    const interval = setInterval(loadReadings, 5000);
+    return () => clearInterval(interval);
+  }, [simulationRunning, loadReadings]);
 
   const stats: StatsSummary = useMemo(() => {
     const values = readings.map((r) => r.value);
@@ -69,7 +78,7 @@ export default function HistoryScreen() {
     }
 
     try {
-      const csv = readingsToCSV(readings);
+      const csv = '\uFEFF' + readingsToCSV(readings);
       const fileName = `${selectedSensor}_${selectedPeriod}_${Date.now()}.csv`;
       const file = new File(Paths.cache, fileName);
       file.write(csv);

@@ -1,0 +1,10 @@
+{
+  "title": "Simulación y Umbrales",
+  "frequency": "Frecuencia de simulación",
+  "fast": "Rápido (2s)",
+  "normal": "Normal (3s)",
+  "slow": "Lento (5s)",
+  "thresholds": "Umbrales de sensores",
+  "warning": "Advertencia:",
+  "critical": "Crítico:"
+}

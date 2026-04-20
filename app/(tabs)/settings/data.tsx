@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -13,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { useTheme } from '@/hooks/useTheme';
+import { useAppStore } from '@/store/appStore';
 import {
   getDatabaseSize,
   formatDatabaseSize,
@@ -26,6 +28,8 @@ import { themeConfig } from '@/constants/colors';
 export default function DataSettingsScreen() {
   const { t } = useTranslation();
   const { colors } = useTheme();
+  const clearAlerts = useAppStore((s) => s.clearAlerts);
+  const recordPurge = useAppStore((s) => s.recordPurge);
   const [dbSize, setDbSize] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
 
@@ -36,9 +40,16 @@ export default function DataSettingsScreen() {
     } catch {}
   }, []);
 
-  React.useEffect(() => {
+  useFocusEffect(useCallback(() => {
     loadDbSize();
-  }, [loadDbSize]);
+  }, [loadDbSize]));
+
+  const simulationRunning = useAppStore((s) => s.simulationRunning);
+  useEffect(() => {
+    if (!simulationRunning) return;
+    const interval = setInterval(loadDbSize, 5000);
+    return () => clearInterval(interval);
+  }, [simulationRunning, loadDbSize]);
 
   const handleExportAll = useCallback(async () => {
     setExporting(true);
@@ -46,7 +57,7 @@ export default function DataSettingsScreen() {
       const readings = await getReadings(undefined, 10000);
       const alerts = await dbGetAlerts(undefined, 1000);
       const combined =
-        `=== SENSOR READINGS ===\n${readingsToCSV(readings)}\n\n=== ALERTS ===\n${alertsToCSV(alerts)}`;
+        '\uFEFF' + readingsToCSV(readings) + '\n\n' + alertsToCSV(alerts);
       const fileName = `iot_export_${Date.now()}.csv`;
       const file = new File(Paths.cache, fileName);
       file.write(combined);
@@ -73,6 +84,8 @@ export default function DataSettingsScreen() {
           onPress: async () => {
             try {
               const result = await purgeAllData();
+              clearAlerts();
+              recordPurge();
               RNAlert.alert(
                 t('dataSettings.deleted'),
                 t('dataSettings.purgeSuccess', {
@@ -88,7 +101,7 @@ export default function DataSettingsScreen() {
         },
       ]
     );
-  }, [t, loadDbSize]);
+  }, [t, loadDbSize, clearAlerts, recordPurge]);
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>

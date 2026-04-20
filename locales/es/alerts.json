@@ -1,0 +1,19 @@
+{
+  "title": "Alertas",
+  "all": "Todas",
+  "unread": "No leídas",
+  "acknowledged": "Reconocidas",
+  "info": "Info",
+  "warning": "Advertencia",
+  "critical": "Crítico",
+  "acknowledgeAll": "Reconocer todas",
+  "deleteAll": "Eliminar todas",
+  "noAlerts": "Sin alertas",
+  "unreadCount": "{{count}} alerta(s) sin leer",
+  "acknowledgeAllTitle": "Reconocer todas las alertas",
+  "acknowledgeAllMsg": "¿Deseas reconocer todas las alertas?",
+  "acknowledgeBtn": "Reconocer",
+  "deleteAllTitle": "Eliminar todas las alertas",
+  "deleteAllMsg": "Esta acción es irreversible. ¿Continuar?",
+  "deleteBtn": "Eliminar"
+}

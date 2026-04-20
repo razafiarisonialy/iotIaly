@@ -1,0 +1,10 @@
+{
+  "title": "Simulation & Thresholds",
+  "frequency": "Simulation frequency",
+  "fast": "Fast (2s)",
+  "normal": "Normal (3s)",
+  "slow": "Slow (5s)",
+  "thresholds": "Sensor thresholds",
+  "warning": "Warning:",
+  "critical": "Critical:"
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Simulación",
+  "start": "Iniciar simulación",
+  "stop": "Detener simulación",
+  "realTimeSensors": "Sensores en tiempo real",
+  "lastAlerts": "Últimas alertas",
+  "prediction": "Predicción",
+  "minutes": "min",
+  "confidence": "confianza",
+  "last30min": "Últimos 30 minutos"
+}

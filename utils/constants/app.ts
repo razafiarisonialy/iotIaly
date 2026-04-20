@@ -1,5 +1,7 @@
+import Constants from 'expo-constants';
+
 export const APP_NAME = 'IALY IOT';
-export const APP_VERSION = '1.0.0';
+export const APP_VERSION = Constants.expoConfig?.version ?? '1.0.0';
 export const APP_DESCRIPTION =
   'Application IoT/AIoT intelligente avec simulation de capteurs et IA embarquée';
 

@@ -1,0 +1,16 @@
+{
+  "title": "Historial",
+  "sensor": "Sensor",
+  "period": "Período",
+  "statistics": "Estadísticas",
+  "min": "Mín",
+  "max": "Máx",
+  "average": "Promedio",
+  "stdDev": "Desv. Est.",
+  "noData": "Sin datos para este período",
+  "exportCsv": "Exportar CSV",
+  "anomaly": "Anomalía",
+  "readings": "lecturas",
+  "noDataToExport": "Sin datos",
+  "noDataToExportMsg": "No hay datos para exportar."
+}

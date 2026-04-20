@@ -1,0 +1,12 @@
+{
+  "title": "Ajustes",
+  "appearance": "Apariencia y Notificaciones",
+  "appearanceDesc": "Modo oscuro, preferencias de notificación",
+  "simulation": "Simulación y Umbrales",
+  "simulationDesc": "Frecuencia y límites de sensores",
+  "api": "Clima y Ciudad",
+  "apiDesc": "Configuración del clima",
+  "data": "Datos",
+  "dataDesc": "Exportar y gestionar base de datos",
+  "about": "Acerca de"
+}

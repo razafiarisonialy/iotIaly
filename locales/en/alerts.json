@@ -1,0 +1,19 @@
+{
+  "title": "Alerts",
+  "all": "All",
+  "unread": "Unread",
+  "acknowledged": "Acknowledged",
+  "info": "Info",
+  "warning": "Warning",
+  "critical": "Critical",
+  "acknowledgeAll": "Acknowledge all",
+  "deleteAll": "Delete all",
+  "noAlerts": "No alerts",
+  "unreadCount": "{{count}} unread alert(s)",
+  "acknowledgeAllTitle": "Acknowledge all alerts",
+  "acknowledgeAllMsg": "Do you really want to acknowledge all alerts?",
+  "acknowledgeBtn": "Acknowledge",
+  "deleteAllTitle": "Delete all alerts",
+  "deleteAllMsg": "This action is irreversible. Continue?",
+  "deleteBtn": "Delete"
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Historique",
+  "sensor": "Capteur",
+  "period": "Période",
+  "statistics": "Statistiques",
+  "min": "Min",
+  "max": "Max",
+  "average": "Moyenne",
+  "stdDev": "Écart-type",
+  "noData": "Aucune donnée pour cette période",
+  "exportCsv": "Exporter CSV",
+  "anomaly": "Anomalie",
+  "readings": "mesures",
+  "noDataToExport": "Aucune donnée",
+  "noDataToExportMsg": "Pas de données à exporter."
+}
