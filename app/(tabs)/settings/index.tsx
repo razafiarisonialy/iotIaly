@@ -1,4 +1,3 @@
-
 import { Header } from '@/components/layout/Header';
 import { useTheme } from '@/hooks/useTheme';
 import { APP_DESCRIPTION, APP_NAME, APP_VERSION } from '@/utils/constants';
@@ -62,7 +61,7 @@ export default function SettingsIndexScreen() {
       <Header title={t('settings.title')} showStatus={false} />
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Section list */}
+        {}
         <View style={[styles.listCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
           {sections.map((section, idx) => (
             <React.Fragment key={section.key}>
@@ -93,7 +92,7 @@ export default function SettingsIndexScreen() {
 
       </ScrollView>
 
-      {/* About footer */}
+      {}
       <View style={styles.footerPadding}>
         <Text style={[styles.sectionLabel, { color: colors.textTertiary }]}>
           {t('settings.about').toUpperCase()}

@@ -1,4 +1,3 @@
-// db/migrations/v1_schema_and_defaults.ts
 import type * as SQLite from 'expo-sqlite';
 import type { Migration } from './runner';
 

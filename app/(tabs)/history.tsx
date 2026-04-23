@@ -1,25 +1,10 @@
-
 import { LineChartSensor } from '@/components/charts/LineChartSensor';
 import { Header } from '@/components/layout/Header';
 import { themeConfig } from '@/constants/colors';
 import { useTheme } from '@/hooks/useTheme';
 import { getReadingsByDateRange } from '@/services/database';
-import type { MaterialIconName, SensorReading, SensorType, StatsSummary, TimePeriod } from '@/types';
-import {
-  SENSOR_COLORS,
-  SENSOR_ICONS,
-  SENSOR_LABELS,
-  SENSOR_TYPES,
-  TIME_PERIOD_LABELS,
-} from '@/utils/constants';
-import {
-  calculateStats,
-  formatDateTime,
-  getCurrentTimestamp,
-  getStartDateForPeriod,
-  readingsToCSV,
-  roundTo,
-} from '@/utils/helpers';
+import type { SensorReading, SensorType, StatsSummary, TimePeriod } from '@/types';
+import { getCurrentTimestamp, getStartDateForPeriod, readingsToCSV, calculateStats } from '@/utils/helpers';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
@@ -35,7 +20,12 @@ import {
   View,
 } from 'react-native';
 
-const TIME_PERIODS: TimePeriod[] = ['1h', '6h', '24h', '7d', '30d'];
+import { useAppStore } from '@/store/appStore';
+import { SensorSelector } from '@/components/history/SensorSelector';
+import { PeriodSelector } from '@/components/history/PeriodSelector';
+import { StatsContainer } from '@/components/history/StatsContainer';
+import { ReadingRow } from '@/components/history/ReadingRow';
+import { showErrorToast } from '@/services/toastService';
 
 export default function HistoryScreen() {
   const { t } = useTranslation();
@@ -45,8 +35,10 @@ export default function HistoryScreen() {
   const [readings, setReadings] = useState<SensorReading[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSensorPicker, setShowSensorPicker] = useState(false);
+  const dataPurgedAt = useAppStore((s) => s.dataPurgedAt);
+  const simulationRunning = useAppStore((s) => s.simulationRunning);
 
-    const loadReadings = useCallback(async () => {
+  const loadReadings = useCallback(async () => {
     setIsLoading(true);
     try {
       const startDate = getStartDateForPeriod(selectedPeriod);
@@ -57,32 +49,36 @@ export default function HistoryScreen() {
         selectedSensor
       );
       setReadings(data);
-    } catch (error) {
-      console.error('Failed to load readings:', error);
+    } catch {
+      showErrorToast('errors.loadReadingsFailed');
     } finally {
       setIsLoading(false);
     }
   }, [selectedSensor, selectedPeriod]);
 
-  
   useEffect(() => {
     loadReadings();
-  }, [loadReadings]);
+  }, [loadReadings, dataPurgedAt]);
 
-  
+  useEffect(() => {
+    if (!simulationRunning) return;
+    const interval = setInterval(loadReadings, 5000);
+    return () => clearInterval(interval);
+  }, [simulationRunning, loadReadings]);
+
   const stats: StatsSummary = useMemo(() => {
     const values = readings.map((r) => r.value);
     return calculateStats(values);
   }, [readings]);
 
-    const handleExport = useCallback(async () => {
+  const handleExport = useCallback(async () => {
     if (readings.length === 0) {
       RNAlert.alert(t('history.noDataToExport'), t('history.noDataToExportMsg'));
       return;
     }
 
     try {
-      const csv = readingsToCSV(readings);
+      const csv = '\uFEFF' + readingsToCSV(readings);
       const fileName = `${selectedSensor}_${selectedPeriod}_${Date.now()}.csv`;
       const file = new File(Paths.cache, fileName);
       file.write(csv);
@@ -94,51 +90,15 @@ export default function HistoryScreen() {
           dialogTitle: t('history.exportCsv'),
         });
       }
-    } catch (error) {
-      console.error('Export failed:', error);
+    } catch {
+      showErrorToast('errors.exportFailed');
       RNAlert.alert(t('common.error'), t('dataSettings.exportError'));
     }
   }, [readings, t, selectedSensor, selectedPeriod]);
 
-    const renderReadingItem = useCallback(
+  const renderReadingItem = useCallback(
     ({ item }: { item: SensorReading }) => (
-      <View
-        style={[
-          styles.readingRow,
-          {
-            backgroundColor: item.isAnomaly
-              ? `${colors.error}10`
-              : colors.surface,
-            borderColor: colors.border,
-          },
-        ]}
-      >
-        <Text style={[styles.readingDate, { color: colors.textSecondary }]}>
-          {formatDateTime(item.timestamp)}
-        </Text>
-        <Text style={[styles.readingValue, { color: colors.text }]}>
-          {roundTo(item.value, 2)} {item.unit}
-        </Text>
-        <View
-          style={[
-            styles.readingStatus,
-            {
-              backgroundColor: item.isAnomaly
-                ? `${colors.error}20`
-                : `${colors.success}20`,
-            },
-          ]}
-        >
-          <Text
-            style={[
-              styles.readingStatusText,
-              { color: item.isAnomaly ? colors.error : colors.success },
-            ]}
-          >
-            {item.isAnomaly ? t('history.anomaly') : 'Normal'}
-          </Text>
-        </View>
-      </View>
+      <ReadingRow item={item} colors={colors} t={t} />
     ),
     [colors, t]
   );
@@ -169,102 +129,20 @@ export default function HistoryScreen() {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <>
-            {}
-            <TouchableOpacity
-              style={[
-                styles.sensorSelector,
-                { backgroundColor: colors.surface, borderColor: colors.border },
-              ]}
-              onPress={() => setShowSensorPicker(!showSensorPicker)}
-            >
-              <MaterialCommunityIcons
-                name={SENSOR_ICONS[selectedSensor]}
-                size={20}
-                color={SENSOR_COLORS[selectedSensor]}
-              />
-              <Text style={[styles.selectorText, { color: colors.text }]}>
-                {SENSOR_LABELS[selectedSensor]}
-              </Text>
-              <MaterialCommunityIcons
-                name={showSensorPicker ? 'chevron-up' : 'chevron-down'}
-                size={20}
-                color={colors.textSecondary}
-              />
-            </TouchableOpacity>
+            <SensorSelector
+              selectedSensor={selectedSensor}
+              setSelectedSensor={setSelectedSensor}
+              showSensorPicker={showSensorPicker}
+              setShowSensorPicker={setShowSensorPicker}
+              colors={colors}
+            />
 
-            {}
-            {showSensorPicker && (
-              <View
-                style={[
-                  styles.dropdown,
-                  { backgroundColor: colors.surface, borderColor: colors.border },
-                ]}
-              >
-                {SENSOR_TYPES.map((type) => (
-                  <TouchableOpacity
-                    key={type}
-                    style={[
-                      styles.dropdownItem,
-                      selectedSensor === type && {
-                        backgroundColor: `${SENSOR_COLORS[type]}15`,
-                      },
-                    ]}
-                    onPress={() => {
-                      setSelectedSensor(type);
-                      setShowSensorPicker(false);
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name={SENSOR_ICONS[type]}
-                      size={18}
-                      color={SENSOR_COLORS[type]}
-                    />
-                    <Text style={[styles.dropdownText, { color: colors.text }]}>
-                      {SENSOR_LABELS[type]}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
+            <PeriodSelector
+              selectedPeriod={selectedPeriod}
+              setSelectedPeriod={setSelectedPeriod}
+              colors={colors}
+            />
 
-            {}
-            <View style={styles.periodContainer}>
-              {TIME_PERIODS.map((period) => (
-                <TouchableOpacity
-                  key={period}
-                  style={[
-                    styles.periodChip,
-                    {
-                      backgroundColor:
-                        selectedPeriod === period
-                          ? colors.primary
-                          : colors.surface,
-                      borderColor:
-                        selectedPeriod === period
-                          ? colors.primary
-                          : colors.border,
-                    },
-                  ]}
-                  onPress={() => setSelectedPeriod(period)}
-                >
-                  <Text
-                    style={[
-                      styles.periodText,
-                      {
-                        color:
-                          selectedPeriod === period
-                            ? themeConfig.colors.white
-                            : colors.textSecondary,
-                      },
-                    ]}
-                  >
-                    {TIME_PERIOD_LABELS[period]}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {}
             {isLoading && (
               <ActivityIndicator
                 size="large"
@@ -273,7 +151,6 @@ export default function HistoryScreen() {
               />
             )}
 
-            {}
             {!isLoading && readings.length > 0 && (
               <LineChartSensor
                 sensorType={selectedSensor}
@@ -283,30 +160,10 @@ export default function HistoryScreen() {
               />
             )}
 
-            {}
             {!isLoading && readings.length > 0 && (
-              <View
-                style={[
-                  styles.statsContainer,
-                  { backgroundColor: colors.surface, borderColor: colors.border },
-                ]}
-              >
-                <Text style={[styles.statsTitle, { color: colors.text }]}>
-                  {t('history.statistics')}
-                </Text>
-                <View style={styles.statsGrid}>
-                  <StatBox label={t('history.min')} value={stats.min.toString()} colors={colors} icon="arrow-down" />
-                  <StatBox label={t('history.max')} value={stats.max.toString()} colors={colors} icon="arrow-up" />
-                  <StatBox label={t('history.average')} value={stats.average.toString()} colors={colors} icon="approximately-equal" />
-                  <StatBox label={t('history.stdDev')} value={stats.standardDeviation.toString()} colors={colors} icon="sigma" />
-                </View>
-                <Text style={[styles.statsCount, { color: colors.textTertiary }]}>
-                  {stats.count} {t('history.readings')}
-                </Text>
-              </View>
+              <StatsContainer stats={stats} colors={colors} t={t} />
             )}
 
-            {}
             {readings.length > 0 && (
               <TouchableOpacity
                 style={[
@@ -324,7 +181,6 @@ export default function HistoryScreen() {
               </TouchableOpacity>
             )}
 
-            {}
             {readings.length > 0 && (
               <View
                 style={[
@@ -371,51 +227,6 @@ export default function HistoryScreen() {
   );
 }
 
-function StatBox({
-  label,
-  value,
-  colors,
-  icon,
-}: {
-  label: string;
-  value: string;
-  colors: Record<string, string>;
-  icon: MaterialIconName;
-}) {
-  return (
-    <View style={[statStyles.box, { backgroundColor: colors.surfaceElevated }]}>
-      <MaterialCommunityIcons
-        name={icon}
-        size={14}
-        color={colors.primary}
-      />
-      <Text style={[statStyles.value, { color: colors.text }]}>{value}</Text>
-      <Text style={[statStyles.label, { color: colors.textSecondary }]}>
-        {label}
-      </Text>
-    </View>
-  );
-}
-
-const statStyles = StyleSheet.create({
-  box: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 10,
-    gap: 2,
-  },
-  value: {
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  label: {
-    fontSize: 10,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-  },
-});
-
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
@@ -423,74 +234,8 @@ const styles = StyleSheet.create({
   listContent: {
     padding: 16,
   },
-  sensorSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 8,
-    gap: 10,
-  },
-  selectorText: {
-    fontSize: 15,
-    fontWeight: '600',
-    flex: 1,
-  },
-  dropdown: {
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 12,
-    overflow: 'hidden',
-  },
-  dropdownItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    gap: 10,
-  },
-  dropdownText: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  periodContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 16,
-  },
-  periodChip: {
-    flex: 1,
-    paddingVertical: 8,
-    borderRadius: 10,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
-  periodText: {
-    fontSize: 11,
-    fontWeight: '600',
-  },
   loader: {
     marginVertical: 32,
-  },
-  statsContainer: {
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    marginVertical: 12,
-  },
-  statsTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    marginBottom: 10,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  statsCount: {
-    fontSize: 11,
-    textAlign: 'center',
-    marginTop: 8,
   },
   exportButton: {
     flexDirection: 'row',
@@ -518,36 +263,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
-  },
-  readingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    borderWidth: 0.5,
-    marginBottom: 4,
-    height: 52,
-  },
-  readingDate: {
-    fontSize: 11,
-    flex: 1.2,
-  },
-  readingValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    flex: 0.8,
-    textAlign: 'center',
-  },
-  readingStatus: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  readingStatusText: {
-    fontSize: 10,
-    fontWeight: '700',
   },
   emptyState: {
     alignItems: 'center',

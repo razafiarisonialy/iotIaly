@@ -1,4 +1,3 @@
-
 import { themeConfig } from '@/constants/colors';
 import { useTheme } from '@/hooks/useTheme';
 import { setSetting } from '@/services/database';
@@ -54,7 +53,7 @@ export default function AppearanceScreen() {
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 
-        {/* Appearance */}
+        { }
         <Text style={[styles.groupLabel, { color: colors.textTertiary }]}>
           {t('appearance.title').toUpperCase()}
         </Text>
@@ -71,7 +70,7 @@ export default function AppearanceScreen() {
           </View>
         </View>
 
-        {/* Notifications */}
+        { }
         <Text style={[styles.groupLabel, { color: colors.textTertiary }]}>
           {t('appearance.notifications').toUpperCase()}
         </Text>
@@ -88,7 +87,7 @@ export default function AppearanceScreen() {
           </View>
         </View>
 
-        {/* Language */}
+        { }
         <Text style={[styles.groupLabel, { color: colors.textTertiary }]}>
           {t('appearance.language').toUpperCase()}
         </Text>

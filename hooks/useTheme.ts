@@ -1,8 +1,8 @@
-
 import { useCallback, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { useAppStore } from '@/store/appStore';
 import { getSetting, setSetting } from '@/services/database';
+import { showErrorToast } from '@/services/toastService';
 import { COLORS_LIGHT, COLORS_DARK } from '@/utils/constants';
 import type { ColorPalette } from '@/utils/constants';
 
@@ -19,7 +19,6 @@ export function useTheme(): UseThemeReturn {
   const setDarkMode = useAppStore((s) => s.setDarkMode);
   const isDatabaseReady = useAppStore((s) => s.isDatabaseReady);
 
-  
   useEffect(() => {
     if (!isDatabaseReady) return;
 
@@ -29,11 +28,10 @@ export function useTheme(): UseThemeReturn {
         if (savedTheme !== null) {
           setDarkMode(savedTheme === 'dark');
         } else {
-          
           setDarkMode(systemColorScheme === 'dark');
         }
-      } catch (error) {
-        console.error('Failed to load theme setting:', error);
+      } catch {
+        showErrorToast('errors.loadThemeFailed');
       }
     };
 
@@ -45,8 +43,8 @@ export function useTheme(): UseThemeReturn {
     setDarkMode(newMode);
     try {
       await setSetting('theme', newMode ? 'dark' : 'light');
-    } catch (error) {
-      console.error('Failed to save theme setting:', error);
+    } catch {
+      showErrorToast('errors.saveThemeFailed');
     }
   }, [isDarkMode, setDarkMode]);
 
@@ -55,8 +53,8 @@ export function useTheme(): UseThemeReturn {
       setDarkMode(isDark);
       try {
         await setSetting('theme', isDark ? 'dark' : 'light');
-      } catch (error) {
-        console.error('Failed to save theme setting:', error);
+      } catch {
+        showErrorToast('errors.saveThemeFailed');
       }
     },
     [setDarkMode]

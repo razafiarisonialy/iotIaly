@@ -1,4 +1,3 @@
-
 import React, { useCallback } from 'react';
 import {
   View,
@@ -43,7 +42,7 @@ export default function SimulationSettingsScreen() {
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 
-        {/* Frequency */}
+        {}
         <Text style={[styles.groupLabel, { color: colors.textTertiary }]}>
           {t('simulationSettings.frequency').toUpperCase()}
         </Text>
@@ -72,7 +71,7 @@ export default function SimulationSettingsScreen() {
           ))}
         </View>
 
-        {/* Thresholds */}
+        {}
         <Text style={[styles.groupLabel, { color: colors.textTertiary }]}>
           {t('simulationSettings.thresholds').toUpperCase()}
         </Text>
@@ -169,7 +168,7 @@ const styles = StyleSheet.create({
   inputLabel: { fontSize: 12, fontWeight: '600', width: 110 },
   input: {
     flex: 1,
-    height: 36,
+    height: 48,
     borderRadius: 8,
     borderWidth: 1,
     paddingHorizontal: 10,

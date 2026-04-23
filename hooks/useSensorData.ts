@@ -1,21 +1,21 @@
-
-import { useEffect, useRef, useCallback } from 'react';
-import { useAppStore } from '@/store/appStore';
-import { generateAllReadings } from '@/services/sensorSimulator';
 import { analyzeReading } from '@/services/aiEngine';
 import {
-  insertReading,
   insertAlert as dbInsertAlert,
+  insertReading,
 } from '@/services/database';
+import { generateAllReadings } from '@/services/sensorSimulator';
+import { showErrorToast } from '@/services/toastService';
+import { useAppStore } from '@/store/appStore';
 import type {
-  SensorReading,
-  SensorType,
   Alert,
+  SensorReading
 } from '@/types';
 import { SIMULATION_INTERVALS } from '@/types';
 import { SENSOR_UNIT_MAP } from '@/utils/constants';
 import { getCurrentTimestamp } from '@/utils/helpers';
 import * as Haptics from 'expo-haptics';
+
+import { useCallback, useEffect, useRef } from 'react';
 
 export function useSensorData(enabled: boolean): void {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -29,20 +29,18 @@ export function useSensorData(enabled: boolean): void {
   const setSensorPrediction = useAppStore((s) => s.setSensorPrediction);
   const addAlert = useAppStore((s) => s.addAlert);
 
-    const tick = useCallback(async () => {
+  const tick = useCallback(async () => {
     try {
       const readings = generateAllReadings();
 
       for (const simReading of readings) {
         const { sensorType, value, unit, isAnomaly } = simReading;
 
-        
         const sensorState = useAppStore.getState().sensors[sensorType];
         const thresholdConfig = thresholds.find(
           (t) => t.sensorType === sensorType
         );
 
-        
         const analysis = analyzeReading(
           sensorType,
           value,
@@ -51,10 +49,8 @@ export function useSensorData(enabled: boolean): void {
           thresholdConfig
         );
 
-        
         const detectedAnomaly = isAnomaly || analysis.anomaly.isAnomaly;
 
-        
         const readingId = await insertReading(
           sensorType,
           value,
@@ -62,7 +58,6 @@ export function useSensorData(enabled: boolean): void {
           detectedAnomaly
         );
 
-        
         const fullReading: SensorReading = {
           id: readingId,
           sensorType,
@@ -72,11 +67,9 @@ export function useSensorData(enabled: boolean): void {
           isAnomaly: detectedAnomaly,
         };
 
-        
         updateSensorValue(sensorType, value, detectedAnomaly, fullReading);
         setSensorPrediction(sensorType, analysis.prediction);
 
-        
         if (alertsEnabled && analysis.rules.length > 0) {
           for (const rule of analysis.rules) {
             if (rule.triggered) {
@@ -97,23 +90,23 @@ export function useSensorData(enabled: boolean): void {
 
               addAlert(newAlert);
 
-              
               if (rule.severity === 'critical') {
                 Haptics.notificationAsync(
                   Haptics.NotificationFeedbackType.Error
-                ).catch(() => {
-                  
-                });
+                ).catch(() => {});
+
+
               } else if (rule.severity === 'warning') {
                 Haptics.notificationAsync(
                   Haptics.NotificationFeedbackType.Warning
                 ).catch(() => {});
+
+
               }
             }
           }
         }
 
-        
         if (detectedAnomaly && alertsEnabled) {
           const anomalyMessage = `Anomalie détectée sur ${sensorType}: valeur ${value} (Z-Score: ${analysis.anomaly.zScore})`;
           const alertId = await dbInsertAlert(
@@ -132,10 +125,12 @@ export function useSensorData(enabled: boolean): void {
           };
 
           addAlert(anomalyAlert);
+
+
         }
       }
-    } catch (error) {
-      console.error('Sensor simulation tick error:', error);
+    } catch {
+      showErrorToast('errors.sensorSimulationError');
     }
   }, [
     thresholds,
@@ -145,7 +140,6 @@ export function useSensorData(enabled: boolean): void {
     addAlert,
   ]);
 
-  
   useEffect(() => {
     if (!enabled || !simulationRunning) {
       if (intervalRef.current) {
@@ -157,10 +151,8 @@ export function useSensorData(enabled: boolean): void {
 
     const intervalMs = SIMULATION_INTERVALS[simulationSpeed];
 
-    
     tick();
 
-    
     intervalRef.current = setInterval(tick, intervalMs);
 
     return () => {

@@ -1,0 +1,10 @@
+{
+  "title": "Simulation et Seuils",
+  "frequency": "Fréquence de simulation",
+  "fast": "Rapide (2s)",
+  "normal": "Normal (3s)",
+  "slow": "Lent (5s)",
+  "thresholds": "Seuils des capteurs",
+  "warning": "Avertissement :",
+  "critical": "Critique :"
+}

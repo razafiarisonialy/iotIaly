@@ -1,0 +1,19 @@
+{
+  "title": "Dashboard Météo",
+  "noApiKey": "Aucune clé API configurée.\nAllez dans Paramètres > API Externe pour configurer OpenWeatherMap.",
+  "noConnection": "Impossible de se connecter au service météo.\nVérifiez votre connexion internet.",
+  "errorLoading": "Échec du chargement des données météo.",
+  "lastUpdated": "Mis à jour",
+  "feelsLike": "Ressenti",
+  "humidity": "Humidité",
+  "wind": "Vent",
+  "pressure": "Pression",
+  "hourlyForecast": "Prévisions horaires",
+  "currentWeather": "Météo actuelle",
+  "city": "Ville",
+  "country": "Pays",
+  "configureApi": "Configurer l'API",
+  "retry": "Réessayer",
+  "noCity": "Aucune ville configurée",
+  "switchCity": "Changer de ville"
+}

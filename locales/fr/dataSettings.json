@@ -1,0 +1,13 @@
+{
+  "title": "Données",
+  "dbSize": "Taille de la base de données",
+  "exportAll": "Exporter toutes les données",
+  "purge": "Purger l'historique",
+  "purgeTitle": "Purger toutes les données",
+  "purgeMsg": "Cette action supprimera toutes les mesures et alertes. Les paramètres seront conservés.\n\nCette action est irréversible.",
+  "purgeBtn": "Supprimer tout",
+  "exportError": "L'export a échoué.",
+  "purgeError": "La purge a échoué.",
+  "purgeSuccess": "{{readings}} mesures et {{alerts}} alertes supprimées.",
+  "deleted": "Données supprimées"
+}

@@ -1,0 +1,19 @@
+{
+  "title": "API Externa",
+  "realWeather": "Datos meteorológicos reales",
+  "apiKey": "Clave API OpenWeatherMap",
+  "apiKeyPlaceholder": "Ingresa tu clave API",
+  "city": "Ciudad",
+  "cityPlaceholder": "ej: Antananarivo",
+  "testConnection": "Probar conexión",
+  "testing": "Probando...",
+  "addCity": "Añadir ciudad",
+  "addCityPlaceholder": "Nombre de ciudad",
+  "cities": "Ciudades configuradas",
+  "noCity": "Ninguna ciudad añadida",
+  "removeCity": "Quitar",
+  "primaryCity": "Principal",
+  "setPrimary": "Definir como principal",
+  "apiKeyRequired": "Por favor ingresa una clave API válida",
+  "cityRequired": "Por favor ingresa un nombre de ciudad"
+}

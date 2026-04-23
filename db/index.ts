@@ -1,4 +1,3 @@
-// db/index.ts
 import * as SQLite from 'expo-sqlite';
 import { DATABASE_NAME } from '@/utils/constants';
 import { runMigrations } from './migrations/runner';
@@ -10,11 +9,10 @@ export async function initializeDatabase(): Promise<SQLite.SQLiteDatabase> {
 
   database = await SQLite.openDatabaseAsync(DATABASE_NAME);
 
-  // WAL mode : meilleure performance, non critique si échoue
   try {
     await database.execAsync('PRAGMA journal_mode = WAL;');
   } catch {
-    // Continue avec le mode DELETE par défaut
+    
   }
 
   await database.execAsync('PRAGMA foreign_keys = ON;');

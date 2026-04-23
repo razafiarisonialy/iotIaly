@@ -1,4 +1,3 @@
-
 import type {
   ForecastItem,
   OpenWeatherMapForecastResponse,
@@ -14,6 +13,7 @@ import {
   WEATHER_GEOCODING_URL,
   WEATHER_ICON_BASE_URL,
 } from '@/utils/constants';
+import { showErrorToast } from '@/services/toastService';
 import Constants from 'expo-constants';
 
 export interface GeoCity {
@@ -27,7 +27,7 @@ interface WeatherCache {
   timestamp: number;
 }
 
-let weatherCache: WeatherCache | null = null;
+const weatherCacheMap: Record<string, WeatherCache> = {};
 
 function getApiKey(customKey?: string): string {
   if (customKey && customKey.length > 0) {
@@ -42,17 +42,19 @@ export async function fetchWeather(
   apiKey?: string,
   forceRefresh: boolean = false
 ): Promise<WeatherData | null> {
+  const cityKey = city.toLowerCase();
+  const cached = weatherCacheMap[cityKey];
   if (
     !forceRefresh &&
-    weatherCache &&
-    Date.now() - weatherCache.timestamp < WEATHER_CACHE_DURATION_MS
+    cached &&
+    Date.now() - cached.timestamp < WEATHER_CACHE_DURATION_MS
   ) {
-    return weatherCache.data;
+    return cached.data;
   }
 
   const key = getApiKey(apiKey);
   if (!key) {
-    console.warn('Weather API key not configured in .env (WEATHER_API_KEY).');
+    showErrorToast('errors.weatherApiKeyMissing');
     return null;
   }
 
@@ -67,11 +69,11 @@ export async function fetchWeather(
 
     if (!response.ok) {
       if (response.status === 401) {
-        console.error('Weather API: Invalid API key');
+        showErrorToast('errors.weatherApiInvalidKey');
       } else if (response.status === 429) {
-        console.error('Weather API: Rate limit exceeded');
+        showErrorToast('errors.weatherApiRateLimit');
       } else {
-        console.error(`Weather API: HTTP ${response.status}`);
+        showErrorToast('errors.weatherApiHttpError', { status: response.status.toString() });
       }
       return null;
     }
@@ -91,7 +93,7 @@ export async function fetchWeather(
       timestamp: new Date().toISOString(),
     };
 
-    weatherCache = {
+    weatherCacheMap[cityKey] = {
       data: weatherData,
       timestamp: Date.now(),
     };
@@ -99,9 +101,9 @@ export async function fetchWeather(
     return weatherData;
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {
-      console.error('Weather API: Request timed out');
+      showErrorToast('errors.weatherApiTimeout');
     } else {
-      console.error('Weather API error:', error);
+      showErrorToast('errors.weatherApiError');
     }
     return null;
   }
@@ -144,7 +146,9 @@ export function getWeatherIconUrl(iconCode: string): string {
 }
 
 export function clearWeatherCache(): void {
-  weatherCache = null;
+  for (const key in weatherCacheMap) {
+    delete weatherCacheMap[key];
+  }
 }
 
 export async function fetchForecast(
@@ -194,7 +198,7 @@ export async function searchCities(query: string, limit = 5): Promise<GeoCity[]>
     const response = await fetch(url);
     if (!response.ok) return [];
     const data = await response.json() as { name: string; country: string; state?: string }[];
-    // deduplicate by "name, country"
+    
     const seen = new Set<string>();
     return data.filter((item) => {
       const key = `${item.name},${item.country}`;

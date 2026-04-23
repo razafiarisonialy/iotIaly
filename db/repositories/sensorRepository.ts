@@ -1,7 +1,6 @@
-// db/repositories/sensorRepository.ts
-import { getDatabase } from '../index';
 import type { SensorReading, SensorReadingRow, SensorType } from '@/types';
-import { mapRowToSensorReading, getCurrentTimestamp } from '@/utils/helpers';
+import { getCurrentTimestamp, mapRowToSensorReading } from '@/utils/helpers';
+import { getDatabase } from '../index';
 
 export async function insertReading(
   sensorType: SensorType,
@@ -22,12 +21,12 @@ export async function insertReading(
 }
 
 export async function insertReadingsBatch(
-  readings: Array<{
+  readings: {
     sensorType: SensorType;
     value: number;
     unit: string;
     isAnomaly?: boolean;
-  }>
+  }[]
 ): Promise<void> {
   const db = await getDatabase();
   await db.withTransactionAsync(async () => {

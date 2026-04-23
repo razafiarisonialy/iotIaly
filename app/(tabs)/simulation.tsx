@@ -1,4 +1,3 @@
-
 import { LineChartSensor } from '@/components/charts/LineChartSensor';
 import { Header } from '@/components/layout/Header';
 import { AlertBanner } from '@/components/ui/AlertBanner';
@@ -66,7 +65,7 @@ export default function SimulationScreen() {
           />
         }
       >
-        {/* Simulation toggle */}
+        {}
         <TouchableOpacity
           style={[
             styles.simulationButton,
@@ -95,7 +94,7 @@ export default function SimulationScreen() {
           </Text>
         </TouchableOpacity>
 
-        {/* Sensor grid */}
+        {}
         <Text style={[styles.sectionTitle, { color: colors.text }]}>
           {t('simulation.realTimeSensors')}
         </Text>
@@ -105,12 +104,12 @@ export default function SimulationScreen() {
           ))}
         </View>
 
-        {/* Air quality full-width */}
+        {}
         <View style={styles.fullWidthCard}>
           <SensorCard sensorType="air_quality" onPress={handleSensorPress} />
         </View>
 
-        {/* Chart section */}
+        {}
         <View
           style={[
             styles.chartSection,
@@ -181,7 +180,7 @@ export default function SimulationScreen() {
           )}
         </View>
 
-        {/* Recent alerts */}
+        {}
         {recentAlerts.length > 0 && (
           <View style={styles.alertsSection}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>

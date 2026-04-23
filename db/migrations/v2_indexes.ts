@@ -1,4 +1,3 @@
-// db/migrations/v2_indexes.ts
 import type * as SQLite from 'expo-sqlite';
 import type { Migration } from './runner';
 

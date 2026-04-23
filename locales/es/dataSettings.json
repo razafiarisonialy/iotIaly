@@ -1,0 +1,13 @@
+{
+  "title": "Datos",
+  "dbSize": "Tamaño de base de datos",
+  "exportAll": "Exportar todos los datos",
+  "purge": "Purgar historial",
+  "purgeTitle": "Purgar todos los datos",
+  "purgeMsg": "Esto eliminará todas las lecturas y alertas. Los ajustes se conservarán.\n\nEsta acción es irreversible.",
+  "purgeBtn": "Eliminar todo",
+  "exportError": "Error al exportar.",
+  "purgeError": "Error al purgar.",
+  "purgeSuccess": "{{readings}} lecturas y {{alerts}} alertas eliminadas.",
+  "deleted": "Datos eliminados"
+}

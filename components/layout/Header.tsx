@@ -1,17 +1,16 @@
-
-import React, { memo, useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusIndicator } from '@/components/ui/StatusIndicator';
 import { useTheme } from '@/hooks/useTheme';
 import { useSystemStatus } from '@/store/appStore';
+import { APP_NAME } from '@/utils/constants';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { APP_NAME } from '@/utils/constants';
+import React, { memo, useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface HeaderProps {
-    title?: string;
-    showStatus?: boolean;
+  title?: string;
+  showStatus?: boolean;
 }
 
 function HeaderComponent({ title, showStatus = true }: HeaderProps) {
@@ -20,7 +19,6 @@ function HeaderComponent({ title, showStatus = true }: HeaderProps) {
   const systemStatus = useSystemStatus();
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
@@ -66,6 +64,7 @@ export const Header = memo(HeaderComponent);
 
 const styles = StyleSheet.create({
   header: {
+    marginTop: 10,
     paddingHorizontal: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,

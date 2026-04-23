@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { useAppStore } from '@/store/appStore';
 import {
@@ -8,6 +7,7 @@ import {
   getUnacknowledgedAlertCount,
   purgeAllAlerts,
 } from '@/services/database';
+import { showErrorToast } from '@/services/toastService';
 import type { Alert, SeverityLevel } from '@/types';
 
 export type AlertFilter = 'all' | 'unacknowledged' | 'acknowledged';
@@ -47,14 +47,13 @@ export function useAlerts(autoLoad: boolean = true): UseAlertsReturn {
     try {
       const dbAlerts = await dbGetAlerts(undefined, 100);
       storeSetAlerts(dbAlerts);
-    } catch (error) {
-      console.error('Failed to load alerts:', error);
+    } catch {
+      showErrorToast('errors.loadAlertsFailed');
     } finally {
       setIsLoading(false);
     }
   }, [isDatabaseReady, storeSetAlerts]);
 
-  
   useEffect(() => {
     if (autoLoad && isDatabaseReady) {
       refresh();
@@ -66,8 +65,8 @@ export function useAlerts(autoLoad: boolean = true): UseAlertsReturn {
       storeAcknowledge(alertId);
       try {
         await dbAcknowledgeAlert(alertId);
-      } catch (error) {
-        console.error('Failed to acknowledge alert:', error);
+      } catch {
+        showErrorToast('errors.acknowledgeAlertFailed');
       }
     },
     [storeAcknowledge]
@@ -77,8 +76,8 @@ export function useAlerts(autoLoad: boolean = true): UseAlertsReturn {
     storeAcknowledgeAll();
     try {
       await dbAcknowledgeAll();
-    } catch (error) {
-      console.error('Failed to acknowledge all alerts:', error);
+    } catch {
+      showErrorToast('errors.acknowledgeAllFailed');
     }
   }, [storeAcknowledgeAll]);
 
@@ -86,12 +85,11 @@ export function useAlerts(autoLoad: boolean = true): UseAlertsReturn {
     storeClear();
     try {
       await purgeAllAlerts();
-    } catch (error) {
-      console.error('Failed to clear alerts:', error);
+    } catch {
+      showErrorToast('errors.clearAlertsFailed');
     }
   }, [storeClear]);
 
-  
   let filteredAlerts = storeAlerts;
 
   if (filter === 'unacknowledged') {
